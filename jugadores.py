@@ -68,7 +68,9 @@ def app_draw():
     pygame.display.update()
 
 def printJugadores(coords, height, width):
-    """coords: tuple con las coordenadas donde quieras la esquina superior izquierda del cuadro, height: (int) altura del cuadro, width: (int) anchura del cuadro"""
+    """coords: tuple con las coordenadas donde quieras la esquina superior izquierda del cuadro, 
+    height: (int) altura del cuadro, width: (int) anchura del cuadro"""
+    
     pygame.draw.rect(screen, SALMON, ((coords), (height, width)))
     pygame.draw.rect(screen, BLACK, ((coords), (height, width)), 10)
     fuenteNom = pygame.font.SysFont('Arial', 18, True)
