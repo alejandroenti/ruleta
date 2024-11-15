@@ -68,6 +68,7 @@ def makeBet(player, posicio):
     pass
 
 def drawBetTable(coords):
+    #LOS NUMS DE LAS FILAS DE UNA RULETA REAL
     nums = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, ]
     for row in range(3):
         for cell in range(12):
