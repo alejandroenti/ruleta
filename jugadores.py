@@ -23,9 +23,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Window Title')
 
 jugadores = [
-    {"nom": "Taronja", "005": 0, "010": 2, "020": 1, "050": 1, "100": 0},
+    {"nom": "Taronja", "005": 4, "010": 2, "020": 1, "050": 1, "100": 3},
     {"nom": "Lila", "005": 1, "010": 2, "020": 1, "050": 1, "100": 0},
-    {"nom": "Blau", "005": 2, "010": 2, "020": 1, "050": 1, "100": 0}
+    {"nom": "Blau", "005": 2, "010": 2, "020": 3, "050": 1, "100": 0}
 ]
 
 surface = pygame.Surface((WIDTH, HEIGHT))
@@ -68,16 +68,18 @@ def app_draw():
     pygame.display.update()
 
 def printJugadores(coords, height, width):
+    """coords: tuple con las coordenadas donde quieras la esquina superior izquierda del cuadro, height: (int) altura del cuadro, width: (int) anchura del cuadro"""
     pygame.draw.rect(screen, SALMON, ((coords), (height, width)))
     pygame.draw.rect(screen, BLACK, ((coords), (height, width)), 10)
     fuenteNom = pygame.font.SysFont('Arial', 18, True)
     fuenteTxt = pygame.font.SysFont('Arial', 18)
     
     for jugador in jugadores:
-        txtNom = fuenteNom.render(jugador["nom"], True, BLACK)
+        txtNom = fuenteNom.render(jugador["nom"] + f": {jugador['005'] * 5 + jugador['010']  * 10 + jugador['020'] * 20 + jugador['050'] * 50 + jugador['100'] * 100}", True, BLACK)
         txt = "005: " + str(jugador["005"]).ljust(10) +"010: " + str(jugador["010"]).ljust(10) +"020: " + str(jugador["020"]).ljust(10) +"050: "+ str(jugador["050"]).ljust(10) + "100: "+ str(jugador["100"])
         txtFicha = fuenteTxt.render(txt, True, BLACK)
         screen.blit(txtNom, (10 + coords[0] + 20 , coords[1] + 40 + 40 * jugadores.index(jugador)))
         screen.blit(txtFicha, (10 + coords[0] + 20, coords[1] + 60 + 40 * jugadores.index(jugador)))
+
 if __name__ == "__main__":
     main()
