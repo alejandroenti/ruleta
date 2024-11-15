@@ -2,17 +2,20 @@
 
 import pygame
 import sys
+import utils
 
 # Definim les constants
 POSICIONS = 37
 FILES = 3
-CENTER = (450, 450)
-RADI = 350
+CENTER = { "x": 250, "y": 250 }
+RADI = 200
+MINI_RADI = 50
 
 GREEN = (52, 220, 22)
 RED = (220, 22, 22)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+BROWN = (128, 60, 34)
 
 # Definim les variables globals
 numeros_vermells = [1, 3, 5, 6, 7, 12, 14, 16, 18, 19, 21, 22, 23, 25, 27, 30, 32, 34, 36]
@@ -54,8 +57,16 @@ def init_ruleta():
 def draw_ruleta():
     global ruleta_distribucio
 
-    pygame.draw.circle(screen, BLACK, CENTER, RADI, 5)
+    center = (CENTER["x"], CENTER["y"])
+    pygame.draw.circle(screen, BROWN, center, RADI)
 
+    step = int(360 / POSICIONS)
+
+    for index, angle in enumerate(range(0, 361, step)):
+        numero = ruleta_distribucio[index]
+
+def get_rect(angle):
+    pass
 
 
 # Bucle de l'aplicació
@@ -74,7 +85,11 @@ def main():
     sys.exit()
 
 def app_events():
-    pass
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT: # Botó tancar finestra
+            return False
+    
+    return True
 
 def app_run():
     pass
