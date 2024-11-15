@@ -15,5 +15,5 @@
 + Panel:
     - X: 100
     - Y: 500
-    - Ampla: 700
+    - Ampla: 500
     - Alçada: 200
