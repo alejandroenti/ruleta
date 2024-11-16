@@ -18,6 +18,8 @@ RADI_TEXT = 155
 RADI_DECORACIO_1 = 30
 RADI_DECORACIO_2 = 10
 
+POINTS_ARROW = [(425, 250), (500, 200), (500, 300)]
+
 ANGLE_STEP = 360 / POSICIONS
 
 GREEN = (52, 220, 22)
@@ -27,12 +29,15 @@ WHITE = (255, 255, 255)
 BROWN = (128, 60, 34)
 GOLD = (255, 215, 0)
 SILVER = (192, 192, 192)
+BLUE = (91, 182, 237)
 
 # Definim les variables globals
 numeros_vermells = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 ruleta_distribucio = []
 
 is_spinning = False
+speed_ruleta = 45
+decrease_speed_ruleta = 2.5
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -113,17 +118,14 @@ def draw_base_ruleta():
     pygame.draw.circle(screen, GOLD, center, RADI_DECORACIO_2)
     pygame.draw.circle(screen, BLACK, center, RADI_DECORACIO_2, 2)
 
-def spin_ruleta():
-    global is_spinning
-
-    is_spinning = True
+def draw_arrow():
+    pygame.draw.polygon(screen, BLUE, POINTS_ARROW)
 
 # Bucle de l'aplicació
 def main():
     is_looping = True
 
     init_ruleta()
-    spin_ruleta()
 
     while is_looping:
         is_looping = app_events()
@@ -137,22 +139,30 @@ def main():
     sys.exit()
 
 def app_events():
+    global is_spinning
     for event in pygame.event.get():
         if event.type == pygame.QUIT: # Botó tancar finestra
             return False
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            is_spinning = True
     
     return True
 
 def app_run():
-    global is_spinning, ruleta_distribucio
+    global is_spinning, ruleta_distribucio, speed_ruleta, decrease_speed_ruleta
 
     delta_time = clock.get_time() / 1000.0  # Convertir a segons
-    speed = 50
+
+
+    if speed_ruleta <= 0:
+        is_spinning = False
+        speed_ruleta = 50
 
     if is_spinning:
+        speed_ruleta -= decrease_speed_ruleta * delta_time
         for obj in ruleta_distribucio:
-            obj["angles"][0] =  (obj["angles"][0] + speed * delta_time) % 360
-            obj["angles"][1] =  (obj["angles"][1] + speed * delta_time) % 360
+            obj["angles"][0] = (obj["angles"][0] + speed_ruleta * delta_time) % 360
+            obj["angles"][1] = (obj["angles"][1] + speed_ruleta * delta_time) % 360
 
 
 def app_draw():
@@ -162,6 +172,7 @@ def app_draw():
     screen.fill(WHITE)
 
     draw_ruleta()
+    draw_arrow()
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
