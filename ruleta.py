@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import math
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import sys
 import utils
@@ -8,8 +11,10 @@ import utils
 POSICIONS = 37
 FILES = 3
 CENTER = { "x": 250, "y": 250 }
-RADI = 200
-MINI_RADI = 50
+RADI_RULETA = 200
+RADI_EXTERIOR = 185
+RADI_INTERIOR = 50
+RADI_TEXT = 155
 
 GREEN = (52, 220, 22)
 RED = (220, 22, 22)
@@ -18,14 +23,17 @@ WHITE = (255, 255, 255)
 BROWN = (128, 60, 34)
 
 # Definim les variables globals
-numeros_vermells = [1, 3, 5, 6, 7, 12, 14, 16, 18, 19, 21, 22, 23, 25, 27, 30, 32, 34, 36]
+numeros_vermells = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 ruleta_distribucio = []
+
 
 pygame.init()
 clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption('Alejandro López - Exercici Paint')
+
+font_ruleta = pygame.font.SysFont("Arial", 12)
 
 def init_ruleta():
     global ruleta_distribucio
@@ -58,20 +66,44 @@ def draw_ruleta():
     global ruleta_distribucio
 
     center = (CENTER["x"], CENTER["y"])
-    pygame.draw.circle(screen, BROWN, center, RADI)
+    pygame.draw.circle(screen, BROWN, center, RADI_RULETA)
 
-    step = int(360 / POSICIONS)
+    angle = -90
+    step = 360 / POSICIONS
 
-    for index, angle in enumerate(range(0, 361, step)):
-        numero = ruleta_distribucio[index]
+    for num_object in ruleta_distribucio:
+        draw_rect(num_object, angle, step)
+        angle = (angle + step) % 360
 
-def get_rect(angle):
-    pass
+def draw_rect(object, angle, step):
+    points = [
+        tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, angle).values()),
+        tuple(utils.point_on_circle(CENTER, RADI_EXTERIOR, angle).values()),
+        tuple(utils.point_on_circle(CENTER, RADI_EXTERIOR, angle + step).values()),
+        tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, angle + step).values()),
+    ]
 
+    pygame.draw.polygon(screen, object["color"], points)
+    pygame.draw.polygon(screen, WHITE, points, 2)
+
+    color = BLACK if object["color"] == RED else WHITE
+
+    string_surface = font_ruleta.render(f"{object["number"]}", True, color)
+    surface_rotation = -90 - angle - step / 2
+    string_surface = pygame.transform.rotozoom(string_surface, surface_rotation, 1.0)
+    string_rect = string_surface.get_rect()
+
+    pos = tuple(utils.point_on_circle(CENTER, RADI_TEXT, angle + step / 2).values())
+    string_rect.centerx = pos[0]
+    string_rect.centery = pos[1]
+
+    screen.blit(string_surface, string_rect)
 
 # Bucle de l'aplicació
 def main():
     is_looping = True
+
+    init_ruleta()
 
     while is_looping:
         is_looping = app_events()
