@@ -11,7 +11,7 @@ import utils
 POSICIONS = 37
 FILES = 3
 CENTER = { "x": 250, "y": 250 }
-RADI_RULETA = 200
+RADI_RULETA = 225
 RADI_EXTERIOR = 185
 RADI_INTERIOR = 50
 RADI_TEXT = 155
@@ -73,21 +73,12 @@ def init_ruleta():
 def draw_ruleta():
     global ruleta_distribucio
 
-    center = (CENTER["x"], CENTER["y"])
-    pygame.draw.circle(screen, BROWN, center, RADI_RULETA)
-    pygame.draw.circle(screen, SILVER, center, RADI_DECORACIO_1)
-    pygame.draw.circle(screen, GOLD, center, RADI_DECORACIO_2)
-
+    draw_base_ruleta()
     for num_object in ruleta_distribucio:
         draw_rect(num_object)
 
 def draw_rect(object):
-    points = [
-        tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, object["angles"][0]).values()),
-        tuple(utils.point_on_circle(CENTER, RADI_EXTERIOR, object["angles"][0]).values()),
-        tuple(utils.point_on_circle(CENTER, RADI_EXTERIOR, object["angles"][1]).values()),
-        tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, object["angles"][1]).values()),
-    ]
+    points = get_draw_points(object)
 
     pygame.draw.polygon(screen, object["color"], points)
     pygame.draw.polygon(screen, WHITE, points, 2)
@@ -104,6 +95,23 @@ def draw_rect(object):
     string_rect.centery = pos[1]
 
     screen.blit(string_surface, string_rect)
+
+def get_draw_points(object):
+    return [
+        tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, object["angles"][0]).values()),
+        tuple(utils.point_on_circle(CENTER, RADI_EXTERIOR, object["angles"][0]).values()),
+        tuple(utils.point_on_circle(CENTER, RADI_EXTERIOR, object["angles"][1]).values()),
+        tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, object["angles"][1]).values()),
+    ]
+
+def draw_base_ruleta():
+    center = (CENTER["x"], CENTER["y"])
+    pygame.draw.circle(screen, BROWN, center, RADI_RULETA)
+    pygame.draw.circle(screen, BLACK, center, RADI_RULETA, 10)
+    pygame.draw.circle(screen, SILVER, center, RADI_DECORACIO_1)
+    pygame.draw.circle(screen, BLACK, center, RADI_DECORACIO_1, 2)
+    pygame.draw.circle(screen, GOLD, center, RADI_DECORACIO_2)
+    pygame.draw.circle(screen, BLACK, center, RADI_DECORACIO_2, 2)
 
 def spin_ruleta():
     global is_spinning
