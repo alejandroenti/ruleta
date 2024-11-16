@@ -16,6 +16,8 @@ RADI_EXTERIOR = 185
 RADI_INTERIOR = 50
 RADI_TEXT = 155
 
+ANGLE_STEP = 360 / POSICIONS
+
 GREEN = (52, 220, 22)
 RED = (220, 22, 22)
 BLACK = (0, 0, 0)
@@ -54,7 +56,8 @@ def init_ruleta():
             "row": 0 if num == 0 else fila,                 # Indica la fila a la que es troba per apostar, si el número es 0, la fila també serà 0
             "parity": "even" if num % 2 == 0 else "odd",    # Indica si el número es par o impar
             "color": color,                                 # Indica el color del que s'ha de pintar la casella
-            "bets": {}                                      # Indica les apostes que n'hi han en aquesta casella, pot ser un diccionari similar { "player": Blau, "aposta": {"010": 3} }
+            "bets": {},                                     # Indica les apostes que n'hi han en aquesta casella, pot ser un diccionari similar { "player": Blau, "aposta": {"010": 3} }
+            "angles": [ANGLE_STEP * num - 90, ANGLE_STEP * num + ANGLE_STEP - 90]   # Indicamos los ángulos de inicio y de final del polígono que dibujaremos en la ruleta
         }
 
         # Afegim el diccionari a la ruleta
@@ -68,19 +71,15 @@ def draw_ruleta():
     center = (CENTER["x"], CENTER["y"])
     pygame.draw.circle(screen, BROWN, center, RADI_RULETA)
 
-    angle = -90
-    step = 360 / POSICIONS
-
     for num_object in ruleta_distribucio:
-        draw_rect(num_object, angle, step)
-        angle = (angle + step) % 360
+        draw_rect(num_object)
 
-def draw_rect(object, angle, step):
+def draw_rect(object):
     points = [
-        tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, angle).values()),
-        tuple(utils.point_on_circle(CENTER, RADI_EXTERIOR, angle).values()),
-        tuple(utils.point_on_circle(CENTER, RADI_EXTERIOR, angle + step).values()),
-        tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, angle + step).values()),
+        tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, object["angles"][0]).values()),
+        tuple(utils.point_on_circle(CENTER, RADI_EXTERIOR, object["angles"][0]).values()),
+        tuple(utils.point_on_circle(CENTER, RADI_EXTERIOR, object["angles"][1]).values()),
+        tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, object["angles"][1]).values()),
     ]
 
     pygame.draw.polygon(screen, object["color"], points)
@@ -89,15 +88,18 @@ def draw_rect(object, angle, step):
     color = BLACK if object["color"] == RED else WHITE
 
     string_surface = font_ruleta.render(f"{object["number"]}", True, color)
-    surface_rotation = -90 - angle - step / 2
+    surface_rotation = -90 - object["angles"][0] - ANGLE_STEP / 2
     string_surface = pygame.transform.rotozoom(string_surface, surface_rotation, 1.0)
     string_rect = string_surface.get_rect()
 
-    pos = tuple(utils.point_on_circle(CENTER, RADI_TEXT, angle + step / 2).values())
+    pos = tuple(utils.point_on_circle(CENTER, RADI_TEXT, object["angles"][0] + ANGLE_STEP / 2).values())
     string_rect.centerx = pos[0]
     string_rect.centery = pos[1]
 
     screen.blit(string_surface, string_rect)
+
+def spin_ruleta():
+    pass
 
 # Bucle de l'aplicació
 def main():
