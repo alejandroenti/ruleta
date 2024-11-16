@@ -5,7 +5,7 @@
 + Alçada: 720
 
 ## Ruleta
-+ Radi: 200
++ Radi: 225
 + Center:
     - X: 250
     - Y: 250
