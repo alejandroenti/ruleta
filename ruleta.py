@@ -28,6 +28,7 @@ BROWN = (128, 60, 34)
 numeros_vermells = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 ruleta_distribucio = []
 
+is_spinning = False
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -99,13 +100,16 @@ def draw_rect(object):
     screen.blit(string_surface, string_rect)
 
 def spin_ruleta():
-    pass
+    global is_spinning
+
+    is_spinning = True
 
 # Bucle de l'aplicació
 def main():
     is_looping = True
 
     init_ruleta()
+    spin_ruleta()
 
     while is_looping:
         is_looping = app_events()
@@ -126,7 +130,16 @@ def app_events():
     return True
 
 def app_run():
-    pass
+    global is_spinning, ruleta_distribucio
+
+    delta_time = clock.get_time() / 1000.0  # Convertir a segons
+    speed = 50
+
+    if is_spinning:
+        for obj in ruleta_distribucio:
+            obj["angles"][0] =  (obj["angles"][0] + speed * delta_time) % 360
+            obj["angles"][1] =  (obj["angles"][1] + speed * delta_time) % 360
+
 
 def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
