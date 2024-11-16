@@ -15,6 +15,8 @@ RADI_RULETA = 200
 RADI_EXTERIOR = 185
 RADI_INTERIOR = 50
 RADI_TEXT = 155
+RADI_DECORACIO_1 = 30
+RADI_DECORACIO_2 = 10
 
 ANGLE_STEP = 360 / POSICIONS
 
@@ -23,6 +25,8 @@ RED = (220, 22, 22)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BROWN = (128, 60, 34)
+GOLD = (255, 215, 0)
+SILVER = (192, 192, 192)
 
 # Definim les variables globals
 numeros_vermells = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
@@ -71,6 +75,8 @@ def draw_ruleta():
 
     center = (CENTER["x"], CENTER["y"])
     pygame.draw.circle(screen, BROWN, center, RADI_RULETA)
+    pygame.draw.circle(screen, SILVER, center, RADI_DECORACIO_1)
+    pygame.draw.circle(screen, GOLD, center, RADI_DECORACIO_2)
 
     for num_object in ruleta_distribucio:
         draw_rect(num_object)
