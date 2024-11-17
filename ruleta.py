@@ -15,7 +15,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 # Definim les variables globals
-numeros_vermells = [1, 3, 5, 6, 7, 12, 14, 16, 18, 19, 21, 22, 23, 25, 27, 30, 32, 34, 36]
+numeros_vermells = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 ruleta_distribucio = []
 """
 pygame.init()
