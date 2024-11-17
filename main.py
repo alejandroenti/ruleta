@@ -6,6 +6,7 @@ import pygame
 import sys
 
 import ruleta
+import arrow
 
 WHITE = (255, 255, 255)
 
@@ -56,7 +57,7 @@ def app_draw():
     screen.fill(WHITE)
 
     ruleta.draw_ruleta(screen)
-    ruleta.draw_arrow(screen)
+    arrow.draw_arrow(screen)
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()

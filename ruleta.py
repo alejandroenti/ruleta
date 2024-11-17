@@ -18,8 +18,6 @@ RADI_TEXT = 155
 RADI_DECORACIO_1 = 30
 RADI_DECORACIO_2 = 10
 
-POINTS_ARROW = [(425, 250), (500, 200), (500, 300)]
-
 ANGLE_STEP = 360 / POSICIONS
 
 RULETA_ACCELERATION = -2.5
@@ -32,7 +30,6 @@ WHITE = (255, 255, 255)
 BROWN = (128, 60, 34)
 GOLD = (255, 215, 0)
 SILVER = (192, 192, 192)
-BLUE = (91, 182, 237)
 
 # Definimos las variables globales
 numeros_vermells = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
@@ -170,9 +167,6 @@ def draw_base_ruleta(screen):
     pygame.draw.circle(screen, BLACK, center, RADI_DECORACIO_1, 2)
     pygame.draw.circle(screen, GOLD, center, RADI_DECORACIO_2)
     pygame.draw.circle(screen, BLACK, center, RADI_DECORACIO_2, 2)
-
-def draw_arrow(screen):
-    pygame.draw.polygon(screen, BLUE, POINTS_ARROW)
 
 def init_spin():
     '''Configuramos las variables necesarias para que el giro de la ruleta de pueda realizar de manera correcta.
