@@ -6,6 +6,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import sys
 import utils
+import random
 
 # Definim les constants
 POSICIONS = 37
@@ -22,6 +23,9 @@ POINTS_ARROW = [(425, 250), (500, 200), (500, 300)]
 
 ANGLE_STEP = 360 / POSICIONS
 
+RULETA_ACCELERATION = -2.5
+RULETA_SPIN_REV = 3
+
 GREEN = (52, 220, 22)
 RED = (220, 22, 22)
 BLACK = (0, 0, 0)
@@ -35,9 +39,14 @@ BLUE = (91, 182, 237)
 numeros_vermells = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 ruleta_distribucio = []
 
+winner_number = None
+winner_angle = 0
+
+ruleta_init_spin_angle = 0
+ruleta_actual_spin_angle = 0
+ruleta_actual_speed = 0
+
 is_spinning = False
-speed_ruleta = 45
-decrease_speed_ruleta = 2.5
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -121,6 +130,33 @@ def draw_base_ruleta():
 def draw_arrow():
     pygame.draw.polygon(screen, BLUE, POINTS_ARROW)
 
+def init_spin():
+    global is_spinning, winner_number, winner_angle, ruleta_init_spin_angle, ruleta_actual_spin_angle, ruleta_actual_speed, ruleta_init_spin_angle
+
+    is_spinning = True
+    winner_number = random.randint(0, POSICIONS - 1)
+    winner_angle = ruleta_distribucio[winner_number]["angles"][0] + ANGLE_STEP / 2
+
+    ruleta_init_spin_angle = (RULETA_SPIN_REV * 360) + abs(winner_angle) if winner_angle < 0 else (RULETA_SPIN_REV * 360) - winner_angle
+    ruleta_actual_spin_angle = ruleta_init_spin_angle
+
+    ruleta_actual_speed = math.sqrt(-2 * RULETA_ACCELERATION * ruleta_actual_spin_angle)
+
+    print(f"Número a salir: {winner_number}")
+
+def spin(delta_time):
+    global winner_number, winner_angle, ruleta_actual_spin_angle, ruleta_actual_speed, is_spinning, ruleta_distribucio
+
+    for obj in ruleta_distribucio:
+            obj["angles"][0] = (obj["angles"][0] + ruleta_actual_speed * delta_time) % 360
+            obj["angles"][1] = (obj["angles"][1] + ruleta_actual_speed * delta_time) % 360
+
+    ruleta_actual_spin_angle -= ruleta_actual_speed * delta_time
+    ruleta_actual_speed += RULETA_ACCELERATION * delta_time
+
+    if ruleta_actual_spin_angle <= 0:
+        is_spinning = False
+
 # Bucle de l'aplicació
 def main():
     is_looping = True
@@ -139,31 +175,21 @@ def main():
     sys.exit()
 
 def app_events():
-    global is_spinning
     for event in pygame.event.get():
         if event.type == pygame.QUIT: # Botó tancar finestra
             return False
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            is_spinning = True
+            init_spin()
     
     return True
 
 def app_run():
-    global is_spinning, ruleta_distribucio, speed_ruleta, decrease_speed_ruleta
+    global is_spinning
 
     delta_time = clock.get_time() / 1000.0  # Convertir a segons
 
-
-    if speed_ruleta <= 0:
-        is_spinning = False
-        speed_ruleta = 50
-
     if is_spinning:
-        speed_ruleta -= decrease_speed_ruleta * delta_time
-        for obj in ruleta_distribucio:
-            obj["angles"][0] = (obj["angles"][0] + speed_ruleta * delta_time) % 360
-            obj["angles"][1] = (obj["angles"][1] + speed_ruleta * delta_time) % 360
-
+        spin(delta_time)
 
 def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
