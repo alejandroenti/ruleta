@@ -192,6 +192,13 @@ def drawBetTable(coords):
 
             
 def drawPlayerChips(coords):
+    
+    #Dibujando la "mesa"
+    colorTable = GREEN
+    pygame.draw.rect(screen, colorTable, ((coords[0] - 100, coords[1] - 50), (770, 220)))
+    pygame.draw.rect(screen, BLACK, ((coords[0] - 100, coords[1] - 50), (770, 220)), 10)
+
+    #Todo lo demás
     txtPlayerName = pygame.font.SysFont('Arial', 18, True)
     for jugador in jugadores:
         txtName = txtPlayerName.render(jugador["nom"], True, BLACK)
@@ -218,6 +225,6 @@ def drawPlayerChips(coords):
                         elif dato[0] == "100":
                             pygame.draw.circle(screen, DARKGRAY, (coordsChip[0] + 35 * 4, coordsChip[1]), 15)
                             pygame.draw.circle(screen, BLACK,(coordsChip[0] + 35 * 4, coordsChip[1]), 15, 3)
-                            
+
 if __name__ == "__main__":
     main()
