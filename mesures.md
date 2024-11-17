@@ -5,10 +5,10 @@
 + Alçada: 720
 
 ## Ruleta
-+ Radi: 350
++ Radi: 225
 + Center:
-    - X: 450
-    - Y: 450
+    - X: 250
+    - Y: 250
 
 
 ## Jugadores
