@@ -7,7 +7,7 @@ import pygame
 import sys
 import utils
 from ruleta import numeros_vermells, ruleta_distribucio
-from jugadores import jugadores
+from jugadores import jugadores, printJugadores
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -15,12 +15,15 @@ DARKGRAY = (50, 50, 50)
 GRAY = (200, 200, 200)
 YELLOW = (255, 255, 70)
 SALMON = (227, 70, 104)
-RED = (255, 0, 0)
+RED = (235, 0, 0)
 GREEN = (51, 158, 63)
 WALNUT = (115, 61, 27)
+BLUE = (30, 30, 230)
 
 pygame.init()
 clock = pygame.time.Clock()
+
+mouse = {"x": -1, "y": -1, "pressed": False}
 
 # Definir la finestra
 WIDTH = 1280
@@ -52,6 +55,14 @@ def app_events():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # Botó tancar finestra
             return False
+        elif event.type == pygame.MOUSEMOTION:
+            if pygame.mouse.get_focused():
+                mouse['x'] = event.pos[0]
+                mouse['y'] = event.pos[1]
+            else:
+                mouse['x'] = -1
+                mouse['y'] = -1
+
         
     return True
 
@@ -64,13 +75,15 @@ def app_draw():
     screen.fill(WHITE)
     utils.draw_grid(pygame, screen, 50)
     drawBetTable((250, 100))
-    
+    printJugadores((200, 510))
+    drawPlayerChips((180, 350))
     pygame.display.update()
 
 def makeBet(player, posicio):
     pass
 
 def drawBetTable(coords):
+    global nums
     """Las coordenadas son donde quieres que esté la esquina superior izquierda de la casilla '3' de la tabla"""
 
     colorCeldaOutline = BLACK
@@ -151,20 +164,60 @@ def drawBetTable(coords):
     pygame.draw.rect(screen, colorCeldaOutline, ((coords[0] + 350, coords[1] + 138), (70, 40)), 3)
 
     #Dibuja las casillas con números
+    colorOffset = 20
     for row in range(3):
         for cell in range(12):
             colorCelda = RED if nums[row][cell] in numeros_vermells else DARKGRAY
+            
+            #Esto se puede borrar, lo que hace es que si el mouse está encima de una celda en específico, esa celda se "ilumina"
+            #Posiblemente esto sea algo que se borre, a menos que esta función se llame en cada frame, si no es así esto es bastante inutil.
+            if utils.is_point_in_rect({"x": mouse["x"], "y": mouse["y"]}, {"x": coords[0], "y": coords[1], "width": 35 * 12, "height": 35 * 3}):
+                if utils.is_point_in_rect({"x": mouse['x'], "y": mouse['y']}, {"x": coords[0] + 35 * cell, "y": coords[1] + 35 * row, "width": 35, "height": 35}):
+                    listColorcelda = list(colorCelda)
+                    listColorcelda[0] += colorOffset
+                    listColorcelda[1] += colorOffset
+                    listColorcelda[2] += colorOffset
+
+                    colorCelda = tuple(listColorcelda)
+
             pygame.draw.rect(screen, colorCelda, ((coords[0] + (35 * cell), coords[1] + (35 * row)), (35, 35)))
             pygame.draw.rect(screen, colorCeldaOutline, ((coords[0] + (35 * cell), coords[1] + (35 * row)), (35, 35)), 3)
-            txtNum = fuenteNum.render(str(nums[row][cell]), True, BLACK if colorCelda == RED else WHITE)
+
+            txtNum = fuenteNum.render(str(nums[row][cell]), True, WHITE if colorCelda != RED and colorCelda != (RED[0] + colorOffset, RED[1] + colorOffset, RED[2] + colorOffset) else BLACK)
+
             screen.blit(txtNum, ((8 + coords[0] + (35 * cell), 8 + coords[1] + (35 * row))))
 
             if cell * row in ruleta_distribucio:#["bets"]:
                 pass #Aquí habría que hacer que los números que tengan bets se le pongan las fichas que se han apostado encima de los números.
 
             
+def drawPlayerChips(coords):
+    txtPlayerName = pygame.font.SysFont('Arial', 18, True)
+    for jugador in jugadores:
+        txtName = txtPlayerName.render(jugador["nom"], True, BLACK)
+        screen.blit(txtName, (coords[0] + 250 * jugadores.index(jugador), coords[1]))
 
-    
 
+        for dato in jugador.items():
+            if dato[0] != "nom":
+                if dato[1] != 0: #Esto comprueba que el número de fichas no sea 0
+                    for ficha in range(dato[1]):
+                        coordsChip = (coords[0] + 250 * jugadores.index(jugador) - 40, coords[1] + 50 + (ficha * 10))
+                        if dato[0] == "005":
+                            pygame.draw.circle(screen, RED, coordsChip, 15)
+                            pygame.draw.circle(screen, BLACK, coordsChip, 15, 3)
+                        elif dato[0] == "010":
+                            pygame.draw.circle(screen, BLUE, (coordsChip[0] + 35, coordsChip[1]), 15)
+                            pygame.draw.circle(screen, BLACK,(coordsChip[0] + 35, coordsChip[1]), 15, 3)
+                        elif dato[0] == "020":
+                            pygame.draw.circle(screen, GREEN, (coordsChip[0] + 35 * 2, coordsChip[1]), 15)
+                            pygame.draw.circle(screen, BLACK,(coordsChip[0] + 35 * 2, coordsChip[1]), 15, 3)
+                        elif dato[0] == "050":
+                            pygame.draw.circle(screen, WALNUT, (coordsChip[0] + 35 * 3, coordsChip[1]), 15)
+                            pygame.draw.circle(screen, BLACK,(coordsChip[0] + 35 * 3, coordsChip[1]), 15, 3)
+                        elif dato[0] == "100":
+                            pygame.draw.circle(screen, DARKGRAY, (coordsChip[0] + 35 * 4, coordsChip[1]), 15)
+                            pygame.draw.circle(screen, BLACK,(coordsChip[0] + 35 * 4, coordsChip[1]), 15, 3)
+                            
 if __name__ == "__main__":
     main()

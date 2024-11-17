@@ -23,9 +23,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Window Title')
 
 jugadores = [
-    {"nom": "Taronja", "005": 4, "010": 2, "020": 1, "050": 1, "100": 3},
+    {"nom": "Taronja", "005": 7, "010": 2, "020": 1, "050": 1, "100": 3},
     {"nom": "Lila", "005": 1, "010": 2, "020": 1, "050": 1, "100": 0},
-    {"nom": "Blau", "005": 2, "010": 2, "020": 3, "050": 1, "100": 0}
+    {"nom": "Blau", "005": 2, "010": 5, "020": 3, "050": 0, "100": 4}
 ]
 
 surface = pygame.Surface((WIDTH, HEIGHT))
@@ -67,7 +67,7 @@ def app_draw():
     printJugadores((300, 250), 500, 200)
     pygame.display.update()
 
-def printJugadores(coords, height, width):
+def printJugadores(coords, height=500, width=200):
     """coords: tuple con las coordenadas donde quieras la esquina superior izquierda del cuadro, 
     height: (int) altura del cuadro, width: (int) anchura del cuadro"""
     
