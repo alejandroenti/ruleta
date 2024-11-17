@@ -7,7 +7,7 @@ import pygame
 import utils
 import random
 
-# Definim les constants
+# Definimos las constantes
 POSICIONS = 37
 FILES = 3
 CENTER = { "x": 250, "y": 250 }
@@ -34,7 +34,7 @@ GOLD = (255, 215, 0)
 SILVER = (192, 192, 192)
 BLUE = (91, 182, 237)
 
-# Definim les variables globals
+# Definimos las variables globales
 numeros_vermells = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 ruleta_distribucio = []
 
@@ -47,6 +47,7 @@ ruleta_actual_speed = 0
 
 is_spinning = False
 
+# Inicializamos las fuente en Pygame
 pygame.font.init()
 font_ruleta = pygame.font.SysFont("Arial", 12)
 
