@@ -19,6 +19,7 @@ RADI_DECORACIO_1 = 30
 RADI_DECORACIO_2 = 10
 
 ANGLE_STEP = 360 / POSICIONS
+ANGLE_HALF_STEP = ANGLE_STEP / 2
 
 RULETA_ACCELERATION = -2.5
 RULETA_SPIN_REV = 3
@@ -72,7 +73,7 @@ def init_ruleta():
             "parity": "even" if num % 2 == 0 else "odd",    # Indica si el número es par o impar
             "color": color,                                 # Indica el color del que se ha de pintar la casilla
             "bets": {},                                     # Indica las apuestas que hay en esta casilla, puede ser una diccionario similar { "player": Blau, "bet": {"010": 3, "050": 1} }
-            "angles": [ANGLE_STEP * num - 90, ANGLE_STEP * num + ANGLE_STEP - 90]   # Indicamos los ángulos de inicio y de final del polígono que dibujaremos en la ruleta
+            "angles": [ANGLE_STEP * num - 90 - ANGLE_HALF_STEP, ANGLE_STEP * num + ANGLE_STEP - 90 - ANGLE_HALF_STEP]   # Indicamos los ángulos de inicio y de final del polígono que dibujaremos en la ruleta
         }
 
         # Añadimos el diccionario a la ruleta
@@ -122,11 +123,11 @@ def draw_rect(object, screen):
     #   6. Centramos el texto en la posición calculada anteriormente
 
     string_surface = font_ruleta.render(f"{object["number"]}", True, color)
-    surface_rotation = -90 - object["angles"][0] - ANGLE_STEP / 2
+    surface_rotation = -90 - object["angles"][0] - ANGLE_HALF_STEP
     string_surface = pygame.transform.rotozoom(string_surface, surface_rotation, 1.0)
     string_rect = string_surface.get_rect()
 
-    pos = tuple(utils.point_on_circle(CENTER, RADI_TEXT, object["angles"][0] + ANGLE_STEP / 2).values())
+    pos = tuple(utils.point_on_circle(CENTER, RADI_TEXT, object["angles"][0] + ANGLE_HALF_STEP).values())
     string_rect.centerx = pos[0]
     string_rect.centery = pos[1]
 
@@ -180,7 +181,7 @@ def init_spin():
 
     # Calculamos el número que será el ganador y el ángulo en el que se encuentra si texto
     winner_number = random.randint(0, POSICIONS - 1)
-    winner_angle = ruleta_distribucio[winner_number]["angles"][0] + ANGLE_STEP / 2
+    winner_angle = ruleta_distribucio[winner_number]["angles"][0] + ANGLE_HALF_STEP
 
     # Calculamos el giro que deberá hacer la ruleta.
     # !NOTA: si se encuentra retrasada, debemos sumar el ángulo en términos absolutos, ya que deberá dar más giro)
