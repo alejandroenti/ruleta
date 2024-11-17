@@ -4,7 +4,6 @@ import math
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
-import sys
 import utils
 import random
 
@@ -48,12 +47,7 @@ ruleta_actual_speed = 0
 
 is_spinning = False
 
-pygame.init()
-clock = pygame.time.Clock()
-
-screen = pygame.display.set_mode((1280, 720))
-pygame.display.set_caption('Alejandro López - Exercici Paint')
-
+pygame.font.init()
 font_ruleta = pygame.font.SysFont("Arial", 12)
 
 def init_ruleta():
@@ -88,22 +82,26 @@ def init_ruleta():
 
         fila = 1 if fila == 3 else fila + 1
 
-def draw_ruleta():
+def draw_ruleta(screen):
     '''Dibujamos la ruleta completa, desde la base con sus elementos de decoración junto con cada una de las casillas.
+
+    Input:
+        -screen(): Superfície del Pygame.
 
     Retorna: None'''
 
     global ruleta_distribucio
 
-    draw_base_ruleta()
+    draw_base_ruleta(screen)
     for num_object in ruleta_distribucio:
-        draw_rect(num_object)
+        draw_rect(num_object, screen)
 
-def draw_rect(object):
+def draw_rect(object, screen):
     '''Dibujamos el polígono que genera cada una de las casillas de la ruleta. 
 
     Input:
         -obj(dict): Diccionario con todas las propiedades de cada una de las casillas a representar.
+        -screen(): Superfície del Pygame.
 
     Retorna: None'''
 
@@ -151,8 +149,11 @@ def get_draw_points(object):
         tuple(utils.point_on_circle(CENTER, RADI_INTERIOR, object["angles"][1]).values()),
     ]
 
-def draw_base_ruleta():
+def draw_base_ruleta(screen):
     '''Dibujamos la base de la ruleta. La base total de color marrón con un marcado grande de color negro, y la decoración, simulando una ruleta de casino en el mundo real.
+
+    Input:
+        -screen(): Superfície del Pygame.
 
     Retorna: None'''
 
@@ -169,7 +170,7 @@ def draw_base_ruleta():
     pygame.draw.circle(screen, GOLD, center, RADI_DECORACIO_2)
     pygame.draw.circle(screen, BLACK, center, RADI_DECORACIO_2, 2)
 
-def draw_arrow():
+def draw_arrow(screen):
     pygame.draw.polygon(screen, BLUE, POINTS_ARROW)
 
 def init_spin():
@@ -216,51 +217,3 @@ def spin(delta_time):
     # Gestionamos la llegada de la ruleta a la posición indicada
     if ruleta_actual_spin_angle <= 0:
         is_spinning = False
-
-# Bucle de l'aplicació
-def main():
-    is_looping = True
-
-    init_ruleta()
-
-    while is_looping:
-        is_looping = app_events()
-        app_run()
-        app_draw()
-
-        clock.tick(60) # Limitar a 60 FPS
-
-    # Fora del bucle, tancar l'aplicació
-    pygame.quit()
-    sys.exit()
-
-def app_events():
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: # Botó tancar finestra
-            return False
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            init_spin()
-    
-    return True
-
-def app_run():
-    global is_spinning
-
-    delta_time = clock.get_time() / 1000.0  # Convertir a segons
-
-    if is_spinning:
-        spin(delta_time)
-
-def app_draw():
-    global points, buttons_width, buttons_color, padding, selected_color
-
-    # Pintar el fons de blanc
-    screen.fill(WHITE)
-
-    draw_ruleta()
-    draw_arrow()
-
-    # Actualitzar el dibuix a la finestra
-    pygame.display.update()
-
-main()
