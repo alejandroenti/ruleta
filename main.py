@@ -63,7 +63,7 @@ def app_events():
             mouse["pressed"] = False
             mouse["released"] = True
             
-            if button.is_hover_button(mouse):
+            if button.is_hover_button(mouse) and not ruleta.is_spinning:
                 ruleta.init_spin()
                 arrow.reset_arrow_rotation()
             
@@ -74,7 +74,7 @@ def app_run():
 
     delta_time = clock.get_time() / 1000.0  # Convertir a segons
 
-    if button.is_hover_button(mouse):
+    if button.is_hover_button(mouse) and not ruleta.is_spinning:
         if mouse["pressed"]:
             button.is_pressed = True
             button.is_hover = False
