@@ -77,7 +77,7 @@ def app_run():
 
     # Cambiamos los diferentes estados en el que se puede encontrar el botón si estamos sobre él con el mouse y la ruleta no está girando
     if button.is_hover_button(mouse) and not ruleta.is_spinning:
-        button.check_states()
+        button.check_states(mouse)
     else:
         button.is_pressed = False
         button.is_hover = False
