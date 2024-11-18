@@ -65,6 +65,7 @@ def app_events():
             
             if button.is_hover_button(mouse):
                 ruleta.init_spin()
+                arrow.reset_arrow_rotation()
             
     return True
 
@@ -88,8 +89,9 @@ def app_run():
         button.is_hover = False
 
     if ruleta.is_spinning:
-        ruleta.spin(delta_time)
         button.control_blink_animation(delta_time)
+        arrow.control_rotation(delta_time, ruleta.ruleta_actual_speed, ruleta.ANGLE_HALF_STEP)
+        ruleta.spin(delta_time)
 
 def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
