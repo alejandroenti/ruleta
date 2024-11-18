@@ -62,7 +62,9 @@ def app_events():
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse["pressed"] = False
             mouse["released"] = True
-            ruleta.init_spin()
+            
+            if button.is_hover_button(mouse):
+                ruleta.init_spin()
             
     return True
 
