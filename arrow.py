@@ -20,6 +20,7 @@ def draw_arrow(screen):
 
     Retorna: None'''
 
+    # Rotamos los puntos según el ángulo en el que nos encontramos y dibujos la flecha
     rotated_points = rotate_points()
     pygame.draw.polygon(screen, YELLOW, rotated_points)
 
@@ -28,6 +29,8 @@ def rotate_points():
 
     Retorna: list'''
 
+    # Función recogida de https://stackoverflow.com/questions/75116101/how-to-make-rotate-polygon-on-key-in-pygame
+    # Recoge un Vector2 de un pivote y va realizando la rotación de cada uno de los puntos de una lista
     vector2_position = pygame.math.Vector2(PIVOT)
     rotated_points = [
         (pygame.math.Vector2(x, y) - vector2_position).rotate(angle) + vector2_position for x, y in POINTS_ARROW]
@@ -45,6 +48,13 @@ def control_rotation(delta_time, ruleta_speed, angle_step):
 
     global arrow_movement, angle
 
+    # !Nota: Arrow_movement:
+    #   0 -> Rotación hacia la izquierda
+    #   1 -> Rotación hacia la derecha
+    #
+    # Miramos hacia que lado estamos rotando y aplicamos la rotación
+    # Tendremos en cuenta que no queremos que el ángulo de rotación se nos escape de -angle_step y de 0, ya que sino la velocidad no dejará que se mueva correctamente por falta de fuerza.
+    # Al llegar a estos límites, cambiamos el sentido del giro.
     if arrow_movement == 0:
         angle = max(angle - ruleta_speed * delta_time, -angle_step)
     else:
