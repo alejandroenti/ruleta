@@ -96,8 +96,8 @@ def draw_ruleta(screen):
     global ruleta_distribucio
 
     draw_base_ruleta(screen)
-    for num_object in ruleta_distribucio:
-        draw_rect(num_object, screen)
+    for index in range(POSICIONS):
+        draw_rect(ruleta_distribucio[index], screen)
 
 def draw_rect(object, screen):
     '''Dibujamos el polígono que genera cada una de las casillas de la ruleta. 
