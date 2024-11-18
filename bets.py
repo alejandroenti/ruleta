@@ -278,6 +278,7 @@ def app_draw():
 def drawBets(coords):
     colorNum = BLACK
     fuenteTxt = pygame.font.SysFont('Arial', 16, True)
+    displacement = 0
     for numero in ruleta_distribucio:
         #Comprobar si el número tiene alguna apuesta.
         check = 0
@@ -287,11 +288,9 @@ def drawBets(coords):
 
         if check != 3: #En caso de que al menos uno no esté vacío, esto se ejecuta
             txtNumero = fuenteTxt.render(str(numero["number"]), True, colorNum)
-            screen.blit(txtNumero, coords)
-            for dato in list(numero["bets"].values()):
-                if numero["number"] == 1:
-                    print(dato)
-                    print(list(numero["bets"].values()))
+            screen.blit(txtNumero, (coords[0], coords[1] + displacement * 50))
+            displacement += 1
+
         
 def drawBetTable(coords):
     global nums
