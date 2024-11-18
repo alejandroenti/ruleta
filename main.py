@@ -9,7 +9,7 @@ import ruleta
 import arrow
 import button
 
-WHITE = (255, 255, 255)
+DARK_GREEN = (21, 129, 36)
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -95,7 +95,7 @@ def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
 
     # Pintar el fons de blanc
-    screen.fill(WHITE)
+    screen.fill(DARK_GREEN)
 
     # Dibujamos todos los elementos necesarios por pantalla
     ruleta.draw_ruleta(screen)
