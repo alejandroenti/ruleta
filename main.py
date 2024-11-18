@@ -7,6 +7,7 @@ import sys
 
 import ruleta
 import arrow
+import button
 
 WHITE = (255, 255, 255)
 
@@ -15,6 +16,14 @@ clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption('Ruleta Casino - Álvaro Armas & Alejandro López')
+
+# Declaramos la variables
+mouse = {
+    "x": -1,
+    "y": -1,
+    "pressed": False,
+    "released": False
+}
 
 # Bucle de l'aplicació
 def main():
@@ -34,21 +43,51 @@ def main():
     sys.exit()
 
 def app_events():
+    global mouse
+
+    mouse_inside = pygame.mouse.get_focused()  # El ratolí està dins de la finestra?
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT: # Botó tancar finestra
             return False
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+        elif event.type == pygame.MOUSEMOTION:
+            mouse["released"] = False
+            if mouse_inside:
+                mouse["x"], mouse["y"] = event.pos
+            else:
+                mouse["x"] = -1
+                mouse["y"] = -1
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse["pressed"] = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            mouse["pressed"] = False
+            mouse["released"] = True
             ruleta.init_spin()
-    
+            
     return True
 
 def app_run():
-    global is_spinning
+    global mouse, is_spinning
 
     delta_time = clock.get_time() / 1000.0  # Convertir a segons
 
+    if button.is_hover_button(mouse):
+        if mouse["pressed"]:
+            button.is_pressed = True
+            button.is_hover = False
+        elif mouse["released"]:
+            button.is_pressed = False
+            button.is_hover = False
+        else:
+            button.is_hover = True
+            button.is_pressed = False
+    else:
+        button.is_pressed = False
+        button.is_hover = False
+
     if ruleta.is_spinning:
         ruleta.spin(delta_time)
+        button.control_blink_animation(delta_time)
 
 def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
@@ -58,6 +97,7 @@ def app_draw():
 
     ruleta.draw_ruleta(screen)
     arrow.draw_arrow(screen)
+    button.draw_button(screen, ruleta.is_spinning)
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
