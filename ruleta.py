@@ -205,9 +205,9 @@ def spin(delta_time):
     global winner_number, winner_angle, ruleta_actual_spin_angle, ruleta_actual_speed, is_spinning, ruleta_distribucio
 
     # Por cada casilla, vamos aumentando el ángulo de incio y de final
-    for obj in ruleta_distribucio:
-            obj["angles"][0] = (obj["angles"][0] + ruleta_actual_speed * delta_time) % 360
-            obj["angles"][1] = (obj["angles"][1] + ruleta_actual_speed * delta_time) % 360
+    for index in range(POSICIONS):
+            ruleta_distribucio[index]["angles"][0] = (ruleta_distribucio[index]["angles"][0] + ruleta_actual_speed * delta_time) % 360
+            ruleta_distribucio[index]["angles"][1] = (ruleta_distribucio[index]["angles"][1] + ruleta_actual_speed * delta_time) % 360
 
     # Restamos el ángulo actual en el que nos encontramos según la velocidad
     ruleta_actual_spin_angle -= ruleta_actual_speed * delta_time
