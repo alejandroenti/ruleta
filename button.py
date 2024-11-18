@@ -46,7 +46,8 @@ def draw_button(screen, is_spining):
 
     # Dibujamos la base del botón
     button_line_width = select_line_width_button()
-    draw_base_button(screen, color, button_line_width)
+    pygame.draw.rect(screen, color, BUTTON_EXTERIOR, border_radius=32)
+    pygame.draw.rect(screen, BLACK, BUTTON_EXTERIOR, button_line_width, 32)
 
     # Añadimos el texto al botón
     string_surface = font_ruleta.render(BUTTON_TEXT, True, WHITE)
@@ -55,15 +56,6 @@ def draw_button(screen, is_spining):
     string_rect.center = TEXT_POSITION
 
     screen.blit(string_surface, string_rect)
-
-def draw_base_button(screen, color, line_width):
-    if is_pressed:
-        pygame.draw.rect(screen, color, BUTTON_EXTERIOR, border_radius=32)
-        pygame.draw.rect(screen, BLACK, BUTTON_EXTERIOR, line_width, 32)
-    else:
-        pygame.draw.rect(screen, color, BUTTON_EXTERIOR, border_radius=32)
-        pygame.draw.rect(screen, BLACK, BUTTON_EXTERIOR, line_width, 32)
-
 
 def is_hover_button(mouse_pos): 
     '''Detectamos si el ratón se encuentra sobre el botón.
