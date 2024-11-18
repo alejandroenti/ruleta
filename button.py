@@ -12,7 +12,7 @@ TEXT_POSITION = (575, 140)
 
 BUTTON_TEXT = "SPIN"
 
-BUTTON_BLINK_SPEED = 0.5
+BUTTON_BLINK_SPEED = 0.3
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -53,6 +53,7 @@ def draw_button(screen, is_spining):
     string_surface = font_ruleta.render(BUTTON_TEXT, True, WHITE)
     string_rect = string_surface.get_rect()
 
+    # Centramos el texto
     string_rect.center = TEXT_POSITION
 
     screen.blit(string_surface, string_rect)
@@ -76,6 +77,11 @@ def select_color_button(is_spining):
 
     Retorna: color'''
 
+    # Si la ruleta se encuentra girando, deberemos controlar el color del fondo del botón.
+    # En caso contrario:
+    #   Si lo estamos presionando, tendrá un color rojo oscuro.
+    #   Si estamos sólo sobre él, tendrá un rojo más claro.
+    #   En el resto de casos, tendrá un color rojo normal.
     if is_spining:    
         return RED if animation_color == 0 else RED_LIGHT
     else:
@@ -103,7 +109,27 @@ def control_blink_animation(delta_time):
 
     global animation_timer, animation_color
 
+    # Aumentamos el contador de la animación. En cuanto se pase, cambiaremos el color que deberá tomar el botón y reiniciamos el contador
     animation_timer += delta_time
     if animation_timer >= BUTTON_BLINK_SPEED:
         animation_timer = 0
         animation_color = (animation_color + 1) % 2
+
+def check_states(mouse):
+    '''Cambiamos los estados del botón, siempre que el mouse esté dentro del botón.
+
+    Input:
+        -mouse(dict): Diccionario con la toda información del mouse.
+
+    Retorna: None'''
+    global is_pressed, is_hover
+
+    if mouse["pressed"]:
+        is_pressed = True
+        is_hover = False
+    elif mouse["released"]:
+        is_pressed = False
+        is_hover = False
+    else:
+        is_hover = True
+        is_pressed = False
