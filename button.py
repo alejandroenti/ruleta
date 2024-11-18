@@ -114,3 +114,22 @@ def control_blink_animation(delta_time):
     if animation_timer >= BUTTON_BLINK_SPEED:
         animation_timer = 0
         animation_color = (animation_color + 1) % 2
+
+def check_states(mouse):
+    '''Cambiamos los estados del botón, siempre que el mouse esté dentro del botón.
+
+    Input:
+        -mouse(dict): Diccionario con la toda información del mouse.
+
+    Retorna: None'''
+    global is_pressed, is_hover
+
+    if mouse["pressed"]:
+        is_pressed = True
+        is_hover = False
+    elif mouse["released"]:
+        is_pressed = False
+        is_hover = False
+    else:
+        is_hover = True
+        is_pressed = False

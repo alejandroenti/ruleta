@@ -51,7 +51,6 @@ def app_events():
         if event.type == pygame.QUIT: # Botó tancar finestra
             return False
         elif event.type == pygame.MOUSEMOTION:
-            mouse["released"] = False
             if mouse_inside:
                 mouse["x"], mouse["y"] = event.pos
             else:
@@ -63,6 +62,8 @@ def app_events():
             mouse["pressed"] = False
             mouse["released"] = True
             
+            # Cuando levantamos el click derecho del mouse, verificamos si nos encontramos encima del botón y si no se encuentra girando la ruleta.
+            # De esta manera evitamos que se cominece el giro cada vez que pulsamos sobre el botón
             if button.is_hover_button(mouse) and not ruleta.is_spinning:
                 ruleta.init_spin()
                 arrow.reset_arrow_rotation()
@@ -74,20 +75,17 @@ def app_run():
 
     delta_time = clock.get_time() / 1000.0  # Convertir a segons
 
+    # Cambiamos los diferentes estados en el que se puede encontrar el botón si estamos sobre él con el mouse y la ruleta no está girando
     if button.is_hover_button(mouse) and not ruleta.is_spinning:
-        if mouse["pressed"]:
-            button.is_pressed = True
-            button.is_hover = False
-        elif mouse["released"]:
-            button.is_pressed = False
-            button.is_hover = False
-        else:
-            button.is_hover = True
-            button.is_pressed = False
+        button.check_states()
     else:
         button.is_pressed = False
         button.is_hover = False
 
+    # Si la ruleta se encuentra dando vuelta, tendremos el siguiente orden de actualización:
+    #   1. Blink del botón Spin
+    #   2. Rotación de la flecha
+    #   3. Giro de la ruleta con la siguiente disminuación de la velocidad
     if ruleta.is_spinning:
         button.control_blink_animation(delta_time)
         arrow.control_rotation(delta_time, ruleta.ruleta_actual_speed, ruleta.ANGLE_HALF_STEP)
@@ -99,6 +97,7 @@ def app_draw():
     # Pintar el fons de blanc
     screen.fill(WHITE)
 
+    # Dibujamos todos los elementos necesarios por pantalla
     ruleta.draw_ruleta(screen)
     arrow.draw_arrow(screen)
     button.draw_button(screen, ruleta.is_spinning)
