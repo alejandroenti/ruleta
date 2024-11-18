@@ -72,7 +72,11 @@ def init_ruleta():
             "row": 0 if num == 0 else fila,                 # Indica la fila an la que es encuentra para apostar, si el número es 0, la fila tambén será 0
             "parity": "even" if num % 2 == 0 else "odd",    # Indica si el número es par o impar
             "color": color,                                 # Indica el color del que se ha de pintar la casilla
-            "bets": {},                                     # Indica las apuestas que hay en esta casilla, puede ser una diccionario similar { "player": Blau, "bet": {"010": 3, "050": 1} }
+            "bets": {
+                "Taronja": {},
+                "Blau": {},
+                "Lila": {}
+            },                                     # Indica las apuestas que hay en esta casilla, puede ser una diccionario similar { "player": Blau, "bet": {"010": 3, "050": 1} }
             "angles": [ANGLE_STEP * num - 90 - ANGLE_HALF_STEP, ANGLE_STEP * num + ANGLE_STEP - 90 - ANGLE_HALF_STEP]   # Indicamos los ángulos de inicio y de final del polígono que dibujaremos en la ruleta
         }
 
