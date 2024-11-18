@@ -21,8 +21,8 @@ RADI_DECORACIO_2 = 10
 ANGLE_STEP = 360 / POSICIONS
 ANGLE_HALF_STEP = ANGLE_STEP / 2
 
-RULETA_ACCELERATION = -2.5
-RULETA_SPIN_REV = 3
+RULETA_ACCELERATION = -10
+RULETA_SPIN_REV = 5
 
 GREEN = (52, 220, 22)
 RED = (220, 22, 22)
@@ -72,7 +72,11 @@ def init_ruleta():
             "row": 0 if num == 0 else fila,                 # Indica la fila an la que es encuentra para apostar, si el número es 0, la fila tambén será 0
             "parity": "even" if num % 2 == 0 else "odd",    # Indica si el número es par o impar
             "color": color,                                 # Indica el color del que se ha de pintar la casilla
-            "bets": {},                                     # Indica las apuestas que hay en esta casilla, puede ser una diccionario similar { "player": Blau, "bet": {"010": 3, "050": 1} }
+            "bets": {
+                "Taronja": {},
+                "Blau": {},
+                "Lila": {}
+            },                                     # Indica las apuestas que hay en esta casilla, puede ser una diccionario similar { "player": Blau, "bet": {"010": 3, "050": 1} }
             "angles": [ANGLE_STEP * num - 90 - ANGLE_HALF_STEP, ANGLE_STEP * num + ANGLE_STEP - 90 - ANGLE_HALF_STEP]   # Indicamos los ángulos de inicio y de final del polígono que dibujaremos en la ruleta
         }
 
@@ -92,8 +96,8 @@ def draw_ruleta(screen):
     global ruleta_distribucio
 
     draw_base_ruleta(screen)
-    for num_object in ruleta_distribucio:
-        draw_rect(num_object, screen)
+    for index in range(POSICIONS):
+        draw_rect(ruleta_distribucio[index], screen)
 
 def draw_rect(object, screen):
     '''Dibujamos el polígono que genera cada una de las casillas de la ruleta. 
@@ -191,6 +195,8 @@ def init_spin():
     # Calculamos la velcidad incial necesaria para que dado un ángulo a recorrer y una aceleración, la velocidad llegue a 0 de manera continuada
     ruleta_actual_speed = math.sqrt(-2 * RULETA_ACCELERATION * ruleta_actual_spin_angle)
 
+    print(f"Numero a salir: {winner_number}")
+
 def spin(delta_time):
     '''Calculamos el giro que debe estar dando la ruleta en este preciso momento. También gestionamos el final del giro de esta.
 
@@ -199,9 +205,9 @@ def spin(delta_time):
     global winner_number, winner_angle, ruleta_actual_spin_angle, ruleta_actual_speed, is_spinning, ruleta_distribucio
 
     # Por cada casilla, vamos aumentando el ángulo de incio y de final
-    for obj in ruleta_distribucio:
-            obj["angles"][0] = (obj["angles"][0] + ruleta_actual_speed * delta_time) % 360
-            obj["angles"][1] = (obj["angles"][1] + ruleta_actual_speed * delta_time) % 360
+    for index in range(POSICIONS):
+            ruleta_distribucio[index]["angles"][0] = (ruleta_distribucio[index]["angles"][0] + ruleta_actual_speed * delta_time) % 360
+            ruleta_distribucio[index]["angles"][1] = (ruleta_distribucio[index]["angles"][1] + ruleta_actual_speed * delta_time) % 360
 
     # Restamos el ángulo actual en el que nos encontramos según la velocidad
     ruleta_actual_spin_angle -= ruleta_actual_speed * delta_time
