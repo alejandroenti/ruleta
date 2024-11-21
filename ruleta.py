@@ -328,8 +328,6 @@ def init_spin():
     # Calculamos la velcidad incial necesaria para que dado un ángulo a recorrer y una aceleración, la velocidad llegue a 0 de manera continuada
     ruleta_actual_speed = math.sqrt(-2 * RULETA_ACCELERATION * ruleta_actual_spin_angle)
 
-    print(f"Numero a salir: {winner_number}")
-
 def spin(delta_time):
     '''Calculamos el giro que debe estar dando la ruleta en este preciso momento. También gestionamos el final del giro de esta.
 
