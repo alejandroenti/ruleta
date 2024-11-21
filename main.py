@@ -96,6 +96,8 @@ def app_run():
     if ruleta.has_stopped:
         historic.add_played_number(ruleta.get_winner_number())
         ruleta.reset_has_stopped()
+    
+    historic.control_blink_animation(delta_time)
 
 def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
