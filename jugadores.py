@@ -1,20 +1,12 @@
 #!/usr/bin/env python3
 
-import math
-import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
-import sys
-import utils
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 YELLOW = (255, 255, 70)
 SALMON = (227, 70, 104)
-
-pygame.init()
-clock = pygame.time.Clock()
 
 # Definir la finestra
 WIDTH = 1280
@@ -28,46 +20,7 @@ jugadores = [
     {"nom": "Blau", "005": 2, "010": 5, "020": 3, "050": 0, "100": 4}
 ]
 
-surface = pygame.Surface((WIDTH, HEIGHT))
-
-# Bucle de l'aplicació
-def main():
-    is_looping = True
-
-    surface.fill(WHITE)
-
-    while is_looping:
-        is_looping = app_events()
-        app_run()
-        app_draw()
-
-        clock.tick(60) # Limitar a 60 FPS
-
-    # Fora del bucle, tancar l'aplicació
-    pygame.quit()
-    sys.exit()
-
-# Gestionar events
-def app_events():
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:  # Botó tancar finestra
-            return False
-        
-    return True
-
-# Fer càlculs
-def app_run():
-    pass
-
-# Dibuixar
-def app_draw():
-    screen.fill(WHITE)
-    utils.draw_grid(pygame, screen, 50)
-    
-    printJugadores((300, 250), 500, 200)
-    pygame.display.update()
-
-def printJugadores(coords, height=500, width=200):
+def printJugadores(screen, coords, height=500, width=200):
     """coords: tuple con las coordenadas donde quieras la esquina superior izquierda del cuadro, 
     height: (int) altura del cuadro, width: (int) anchura del cuadro"""
     
@@ -82,6 +35,3 @@ def printJugadores(coords, height=500, width=200):
         txtFicha = fuenteTxt.render(txt, True, BLACK)
         screen.blit(txtNom, (10 + coords[0] + 20 , coords[1] + 40 + 40 * jugadores.index(jugador)))
         screen.blit(txtFicha, (10 + coords[0] + 20, coords[1] + 60 + 40 * jugadores.index(jugador)))
-
-if __name__ == "__main__":
-    main()

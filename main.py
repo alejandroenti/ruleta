@@ -9,6 +9,7 @@ import ruleta
 import arrow
 import button
 import historic
+import jugadores
 
 DARK_GREEN = (21, 129, 36)
 
@@ -110,6 +111,7 @@ def app_draw():
     arrow.draw_arrow(screen)
     button.draw_button(screen, ruleta.is_spinning)
     historic.draw_historic(screen)
+    jugadores.printJugadores(screen, (35, 500))
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
