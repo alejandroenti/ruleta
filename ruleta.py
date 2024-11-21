@@ -44,6 +44,7 @@ ruleta_actual_spin_angle = 0
 ruleta_actual_speed = 0
 
 is_spinning = False
+has_stopped = False
 
 # Inicializamos las fuente en Pygame
 pygame.font.init()
@@ -84,6 +85,84 @@ def init_ruleta():
         ruleta_distribucio.append(posicio)
 
         fila = 1 if fila == 3 else fila + 1
+    
+    ruleta_distribucio.append({"number": "row1",
+                            "row": 0,
+                            "parity": "none",
+                            "color": color,
+                            "bets": {
+                                "Taronja": {},
+                                "Lila": {},
+                                "Blau": {}
+                            }, 
+                            "angles": 0   
+                            })
+    ruleta_distribucio.append({"number": "row2",
+                            "row": 0,
+                            "parity": "none",
+                            "color": color,
+                            "bets": {
+                                    "Taronja": {},
+                                    "Lila": {},
+                                    "Blau": {}
+                                }, 
+                                "angles": 0   
+                            })
+    ruleta_distribucio.append({"number": "row3",
+                            "row": 0,
+                            "parity": "none",
+                            "color": color,
+                            "bets": {
+                                    "Taronja": {},
+                                    "Lila": {},
+                                    "Blau": {}
+                                }, 
+                                "angles": 0   
+                            })
+    ruleta_distribucio.append({"number": "par",
+                            "row": 0,
+                            "parity": "none",
+                            "color": color,
+                            "bets": {
+                                    "Taronja": {},
+                                    "Lila": {},
+                                    "Blau": {}
+                                }, 
+                                "angles": 0   
+                            })
+    ruleta_distribucio.append({"number": "red",
+                            "row": 0,
+                            "parity": "none",
+                            "color": color,
+                            "bets": {
+                                    "Taronja": {},
+                                    "Lila": {},
+                                    "Blau": {}
+                                }, 
+                                "angles": 0   
+                            })
+    ruleta_distribucio.append({"number": "black",
+                            "row": 0,
+                            "parity": "none",
+                            "color": color,
+                            "bets": {
+                                    "Taronja": {},
+                                    "Lila": {},
+                                    "Blau": {}
+                                }, 
+                                "angles": 0   
+                            })
+    ruleta_distribucio.append({"number": "impar",
+                            "row": 0,
+                            "parity": "none",
+                            "color": color,
+                            "bets": {
+                                    "Taronja": {},
+                                    "Lila": {},
+                                    "Blau": {}
+                                }, 
+                                "angles": 0   
+                            })
 
 def draw_ruleta(screen):
     '''Dibujamos la ruleta completa, desde la base con sus elementos de decoración junto con cada una de las casillas.
@@ -202,7 +281,7 @@ def spin(delta_time):
 
     Retorna: None'''
 
-    global winner_number, winner_angle, ruleta_actual_spin_angle, ruleta_actual_speed, is_spinning, ruleta_distribucio
+    global winner_number, winner_angle, ruleta_actual_spin_angle, ruleta_actual_speed, is_spinning, has_stopped, ruleta_distribucio
 
     # Por cada casilla, vamos aumentando el ángulo de incio y de final
     for index in range(POSICIONS):
@@ -219,6 +298,12 @@ def spin(delta_time):
     # Gestionamos la llegada de la ruleta a la posición indicada
     if ruleta_actual_spin_angle <= 0:
         is_spinning = False
+        has_stopped = True
 
 def get_winner_number():
     return ruleta_distribucio[winner_number]
+
+def reset_has_stopped():
+    global has_stopped
+
+    has_stopped = False
