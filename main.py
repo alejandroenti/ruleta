@@ -118,9 +118,9 @@ def app_draw():
     historic.draw_historic(screen)
     jugadores.printJugadores(screen, (35, 500))
 
-    bets.drawBetTable(screen, (250, 100))
-    bets.drawBets(screen, (800, 100))
-    bets.drawPlayerChips(screen, (180, 350))
+    bets.drawBetTable(screen, (700, 100))
+    bets.drawBets(screen, (1100, 100))
+    bets.drawPlayerChips(screen, (725, 350))
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
