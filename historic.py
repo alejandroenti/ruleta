@@ -8,6 +8,7 @@ RED = (220, 22, 22)
 GREEN = (52, 220, 22)
 WHITE = (255, 255, 255)
 YELLOW = (240, 229, 48)
+BROWN = (128, 60, 34)
 
 RECT_HISTORIC_EXTERNAL = {
      "x": 680,
@@ -19,7 +20,7 @@ RECT_HISTORIC_EXTERNAL = {
 RECT_HISTORIC_INNER = {
      "x": 696,
      "y": 446,
-     "width": 524,
+     "width": 528,
      "heigth": 84
 }
 
@@ -41,13 +42,17 @@ LIST_MAX_SIZE = 13
 TITLE_TEXT = "HISTORIC"
 TITLE_TEXT_POSITION = (960, 400)
 
+ANIMATION_SPEED = 0.2
+
 # Definimos las variables
 numbers_played = []
 
 font_historic = pygame.font.SysFont("Arial", 16)
 font_historic_title = pygame.font.SysFont("Arial", 48)
 
-color
+animation_accent_color = YELLOW
+animation_current_color = 0
+animation_timer = 0
 
 def draw_historic(screen):
     '''Dibujamos la zona del histórico por completo.
@@ -58,8 +63,8 @@ def draw_historic(screen):
     Retorna: None'''
 
     draw_title(screen)
-    draw_numbers(screen)
     draw_rect(screen)
+    draw_numbers(screen)
 
 def draw_rect(screen):
     '''Dibujamos la base sobre la que se dibujará el histórico.
@@ -70,11 +75,18 @@ def draw_rect(screen):
     Retorna: None'''
 
     # Rotamos los puntos según el ángulo en el que nos encontramos y dibujos la flecha
-    rect_tuple = tuple(RECT_HISTORIC_INNER.values())
+    rect_tuple = tuple(RECT_HISTORIC_EXTERNAL.values())
+    color = WHITE if animation_current_color == 0 else animation_accent_color
+
+    pygame.draw.rect(screen, color, rect_tuple)
     pygame.draw.rect(screen, BLACK, rect_tuple, LINE_WIDTH)
 
-    rect_tuple = tuple(RECT_HISTORIC_EXTERNAL.values())
+
+    rect_tuple = tuple(RECT_HISTORIC_INNER.values())
+    
+    pygame.draw.rect(screen, BROWN, rect_tuple)
     pygame.draw.rect(screen, BLACK, rect_tuple, LINE_WIDTH)
+
 
 def draw_numbers(screen):
     '''Dibujamos las diferentes casillas con los números que han salido en la ruleta.
@@ -130,9 +142,34 @@ def add_played_number(number):
         -number(dict): Diccionario con toda la información del número que tenemos almacenada en la variable 'ruleta_distribucio' en ruleta.py.
 
     Retorna: None'''
-    global numbers_played
+    global numbers_played, animation_accent_color
 
     numbers_played.insert(0, number)
 
     if len(numbers_played) > LIST_MAX_SIZE:
         numbers_played = numbers_played[:LIST_MAX_SIZE]
+
+    animation_accent_color = number["color"]
+
+def define_current_color():
+    '''Definimos el color que debe mostrar según lo que llevamos de animación
+
+    Retorna: None'''
+
+    global animation_timer, animation_current_color
+
+    if animation_timer >= ANIMATION_SPEED:
+        animation_timer = 0
+        animation_current_color = (animation_current_color + 1) % 2
+
+def control_blink_animation(delta_time):
+    '''Controlamos la animación del parpadeo del marco exterior del histórico.
+
+    Input:
+        -delta_time(float): Tiempo entre fotogramas calculado por Pygame.
+
+    Retorna: None'''
+    global animation_timer
+
+    animation_timer += delta_time
+    define_current_color()
