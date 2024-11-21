@@ -8,6 +8,9 @@ import sys
 import ruleta
 import arrow
 import button
+import historic
+import jugadores
+import bets
 
 DARK_GREEN = (21, 129, 36)
 
@@ -22,7 +25,8 @@ mouse = {
     "x": -1,
     "y": -1,
     "pressed": False,
-    "released": False
+    "released": False,
+    "dragging": False
 }
 
 # Bucle de l'aplicació
@@ -60,8 +64,9 @@ def app_events():
             mouse["pressed"] = True
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse["pressed"] = False
+            mouse["dragging"] = False
             mouse["released"] = True
-            
+
             # Cuando levantamos el click derecho del mouse, verificamos si nos encontramos encima del botón y si no se encuentra girando la ruleta.
             # De esta manera evitamos que se cominece el giro cada vez que pulsamos sobre el botón
             if button.is_hover_button(mouse) and not ruleta.is_spinning:
@@ -90,6 +95,15 @@ def app_run():
         button.control_blink_animation(delta_time)
         arrow.control_rotation(delta_time, ruleta.ruleta_actual_speed, ruleta.ANGLE_HALF_STEP)
         ruleta.spin(delta_time)
+    
+    # Si la ruleta se acaba de parar, pondrá la variable 'has_stopped' a True, en ese entonces añadimos el número al histórico y seteamos esa variable a False otra vez
+    if ruleta.has_stopped:
+        historic.add_played_number(ruleta.get_winner_number())
+        ruleta.reset_has_stopped()
+    
+    historic.control_blink_animation(delta_time)
+    bets.isMouseClickOnChip(screen, mouse)
+    bets.releaseChipOnCell(mouse)
 
 def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
@@ -101,6 +115,12 @@ def app_draw():
     ruleta.draw_ruleta(screen)
     arrow.draw_arrow(screen)
     button.draw_button(screen, ruleta.is_spinning)
+    historic.draw_historic(screen)
+    jugadores.printJugadores(screen, (35, 500))
+
+    bets.drawBetTable(screen, (250, 100))
+    bets.drawBets(screen, (800, 100))
+    bets.drawPlayerChips(screen, (180, 350))
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
