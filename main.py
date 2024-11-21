@@ -101,7 +101,7 @@ def app_run():
         historic.add_played_number(ruleta.get_winner_number())
         ruleta.reset_has_stopped()
     
-    historic.control_blink_animation(delta_time)
+    historic.control_animations(delta_time)
     bets.isMouseClickOnChip(screen, mouse)
     bets.releaseChipOnCell(mouse)
 
@@ -118,9 +118,9 @@ def app_draw():
     historic.draw_historic(screen)
     jugadores.printJugadores(screen, (35, 500))
 
-    bets.drawBetTable(screen, (250, 100))
-    bets.drawBets(screen, (800, 100))
-    bets.drawPlayerChips(screen, (180, 350))
+    bets.drawBetTable(screen, (700, 100))
+    bets.drawBets(screen, (1100, 100))
+    bets.drawPlayerChips(screen, (725, 350))
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()

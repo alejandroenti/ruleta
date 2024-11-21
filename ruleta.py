@@ -13,10 +13,11 @@ FILES = 3
 CENTER = { "x": 250, "y": 250 }
 RADI_RULETA = 225
 RADI_EXTERIOR = 185
-RADI_INTERIOR = 50
+RADI_INTERIOR = 85
 RADI_TEXT = 155
-RADI_DECORACIO_1 = 30
-RADI_DECORACIO_2 = 10
+RADI_DECORACIO_1 = 35
+RADI_DECORACIO_2 = 15
+RADI_BAR_CIRCLE = 70
 
 ANGLE_STEP = 360 / POSICIONS
 ANGLE_HALF_STEP = ANGLE_STEP / 2
@@ -46,6 +47,8 @@ ruleta_actual_speed = 0
 is_spinning = False
 has_stopped = False
 
+bars = []
+
 # Inicializamos las fuente en Pygame
 pygame.font.init()
 font_ruleta = pygame.font.SysFont("Arial", 12)
@@ -56,6 +59,9 @@ def init_ruleta():
     Retorna: None'''
 
     global ruleta_distribucio
+
+    # Inicializamos las barras de la ruleta
+    init_bars()
 
     fila = 0
 
@@ -164,6 +170,19 @@ def init_ruleta():
                                 "angles": 0   
                             })
 
+def init_bars():
+    global bars
+
+    for angle in range(-90, 271, 90):
+        bar = {
+            "angle": angle,
+            "desviation": 15,
+            "circle_center": None,
+            "circle_radius": 8
+        }
+
+        bars.append(bar)
+
 def draw_ruleta(screen):
     '''Dibujamos la ruleta completa, desde la base con sus elementos de decoración junto con cada una de las casillas.
 
@@ -252,6 +271,41 @@ def draw_base_ruleta(screen):
     pygame.draw.circle(screen, GOLD, center, RADI_DECORACIO_2)
     pygame.draw.circle(screen, BLACK, center, RADI_DECORACIO_2, 2)
 
+    # Dibujamos las barras
+    draw_bars(screen)
+
+def draw_bars(screen):
+    '''Dibujamos las barras decorativas de la ruleta.
+
+    Input:
+        -screen(): Superfície del Pygame.
+
+    Retorna: None'''
+    for bar in bars:
+        # Calculamos las coordenadas en las que deberemos situar el circulo
+        circle_center = utils.point_on_circle(CENTER, RADI_BAR_CIRCLE, bar["angle"])
+        circle_center_tuple = tuple(circle_center.values())
+
+        # Dibujamos el circulo
+        pygame.draw.circle(screen, SILVER, circle_center_tuple, bar["circle_radius"])
+        pygame.draw.circle(screen, BLACK, circle_center_tuple, bar["circle_radius"], 2)
+
+        # Calculamos las posiciones en el radio de decoración 1 en las puntas del ángulo
+        angle_anterior = bar["angle"] - bar["desviation"]
+        angle_posterior = bar["angle"] + bar["desviation"]
+
+        # Calculamos los 4 puntos en los que la barra se deberá dibujar, desde el circulo de plateado central de la decoración hasta el circulo propio de cada barra
+        bar_points = [
+            tuple(utils.point_on_circle(CENTER, RADI_DECORACIO_1, angle_anterior).values()),
+            tuple(utils.point_on_circle(circle_center, bar["circle_radius"], 180 + bar["angle"] + bar["desviation"]).values()),
+            tuple(utils.point_on_circle(circle_center, bar["circle_radius"], 180 + bar["angle"] - bar["desviation"]).values()),
+            tuple(utils.point_on_circle(CENTER, RADI_DECORACIO_1, angle_posterior).values())
+        ]
+
+        # Dibujamos la barra
+        pygame.draw.polygon(screen, SILVER, bar_points)
+        pygame.draw.polygon(screen, BLACK, bar_points, 2)
+
 def init_spin():
     '''Configuramos las variables necesarias para que el giro de la ruleta de pueda realizar de manera correcta.
 
@@ -274,19 +328,21 @@ def init_spin():
     # Calculamos la velcidad incial necesaria para que dado un ángulo a recorrer y una aceleración, la velocidad llegue a 0 de manera continuada
     ruleta_actual_speed = math.sqrt(-2 * RULETA_ACCELERATION * ruleta_actual_spin_angle)
 
-    print(f"Numero a salir: {winner_number}")
-
 def spin(delta_time):
     '''Calculamos el giro que debe estar dando la ruleta en este preciso momento. También gestionamos el final del giro de esta.
 
     Retorna: None'''
 
-    global winner_number, winner_angle, ruleta_actual_spin_angle, ruleta_actual_speed, is_spinning, has_stopped, ruleta_distribucio
+    global winner_number, winner_angle, ruleta_actual_spin_angle, ruleta_actual_speed, is_spinning, has_stopped, ruleta_distribucio, bars
 
     # Por cada casilla, vamos aumentando el ángulo de incio y de final
     for index in range(POSICIONS):
             ruleta_distribucio[index]["angles"][0] = (ruleta_distribucio[index]["angles"][0] + ruleta_actual_speed * delta_time) % 360
             ruleta_distribucio[index]["angles"][1] = (ruleta_distribucio[index]["angles"][1] + ruleta_actual_speed * delta_time) % 360
+    
+    # Para cada barra de la decoración, vamos aumentando el ángulo
+    for bar in bars:
+        bar["angle"] = (bar["angle"] + ruleta_actual_speed * delta_time) % 360
 
     # Restamos el ángulo actual en el que nos encontramos según la velocidad
     ruleta_actual_spin_angle -= ruleta_actual_speed * delta_time
