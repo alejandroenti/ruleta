@@ -84,7 +84,10 @@ def init_ruleta():
         # Añadimos el diccionario a la ruleta
         ruleta_distribucio.append(posicio)
 
-        ruleta_distribucio.append({"number": "row1",
+        
+        
+        fila = 1 if fila == 3 else fila + 1
+    ruleta_distribucio.append({"number": "row1",
                                "row": 0,
                                "parity": "none",
                                "color": color,
@@ -95,7 +98,7 @@ def init_ruleta():
                                 }, 
                                 "angles": 0   
                                })
-        ruleta_distribucio.append({"number": "row2",
+    ruleta_distribucio.append({"number": "row2",
                                 "row": 0,
                                 "parity": "none",
                                 "color": color,
@@ -106,7 +109,7 @@ def init_ruleta():
                                     }, 
                                     "angles": 0   
                                 })
-        ruleta_distribucio.append({"number": "row3",
+    ruleta_distribucio.append({"number": "row3",
                                 "row": 0,
                                 "parity": "none",
                                 "color": color,
@@ -117,7 +120,7 @@ def init_ruleta():
                                     }, 
                                     "angles": 0   
                                 })
-        ruleta_distribucio.append({"number": "par",
+    ruleta_distribucio.append({"number": "par",
                                 "row": 0,
                                 "parity": "none",
                                 "color": color,
@@ -128,7 +131,7 @@ def init_ruleta():
                                     }, 
                                     "angles": 0   
                                 })
-        ruleta_distribucio.append({"number": "red",
+    ruleta_distribucio.append({"number": "red",
                                 "row": 0,
                                 "parity": "none",
                                 "color": color,
@@ -139,7 +142,7 @@ def init_ruleta():
                                     }, 
                                     "angles": 0   
                                 })
-        ruleta_distribucio.append({"number": "black",
+    ruleta_distribucio.append({"number": "black",
                                 "row": 0,
                                 "parity": "none",
                                 "color": color,
@@ -150,7 +153,7 @@ def init_ruleta():
                                     }, 
                                     "angles": 0   
                                 })
-        ruleta_distribucio.append({"number": "impar",
+    ruleta_distribucio.append({"number": "impar",
                                 "row": 0,
                                 "parity": "none",
                                 "color": color,
@@ -161,8 +164,6 @@ def init_ruleta():
                                     }, 
                                     "angles": 0   
                                 })
-        
-        fila = 1 if fila == 3 else fila + 1
 
 def draw_ruleta(screen):
     '''Dibujamos la ruleta completa, desde la base con sus elementos de decoración junto con cada una de las casillas.

@@ -60,6 +60,7 @@ def main():
         app_draw()
         comprobarResultados(winner_number)
 
+
         clock.tick(60) # Limitar a 60 FPS
 
     # Fora del bucle, tancar l'aplicació
@@ -477,22 +478,147 @@ def comprobarResultados(winnerNumber):
         
         #Si check es mayor a 0 tiene apuestas
         if check > 0:
-            #Comprueba si es el mismo color
-            if numero["number"] == "a":
-                pass
-            if numero["color"] == winner_number["color"]:
-                print("color ganador")
+            #Comprueba si el número es un "numero" o "rojo", "negro", "rows"
+            if isinstance(numero["number"], int):
 
-            #Comprueba si la paridad es la misma
-            if numero["parity"] == winner_number["parity"]:
-                print("paridad ganadora")
+                #Esto comprueba si el número es el mismo que en el que está la apuesta
+                if winner_number["number"] == numero["number"]:
+                    if winner_number["number"] == 0:
+                        for ganador in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadGanada = 0
+                                for dato in ganador[1].items(): 
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 35
 
-            #Esto comprueba si el número es el mismo que en el que está la apuesta
-            if winner_number["number"] == numero["number"]:
-                print("mismo numero")
+                                addCredits(ganador[0], cantidadGanada)
 
-            #Comprueba si la apuesta 
+                    else: #Si el número no es 0
+                        for ganador in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadGanada = 0
+                                for dato in ganador[1].items():
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
 
+                                addCredits(ganador[0], cantidadGanada)
+            
+            #En caso de que no sea un número, pasa aquí
+            else:
+                #Esto comprueba si la paridad es ganadora
+                if numero["number"] == "par":
+                    if winner_number["parity"] == "even":
+                        for ganador in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadGanada = 0
+                                for dato in ganador[1].items():
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+
+                                addCredits(ganador[0], cantidadGanada)
+
+                if numero["number"] == "impar":
+                    if winner_number["parity"] == "odd":
+                        for ganador in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadGanada = 0
+                                for dato in ganador[1].items():
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+
+                                addCredits(ganador[0], cantidadGanada)
+                
+                #Aquí comprobar si el color es ganador
+
+                if numero["number"] == "red":
+                    if winner_number["color"] == (220, 22, 22): #Este color es del archivo ruleta, el color usado para dibujar es otro que está aquí
+                        for ganador in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadGanada = 0
+                                for dato in ganador[1].items():
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+
+                                addCredits(ganador[0], cantidadGanada)
+
+                if numero["number"] == "black":
+                    if winner_number["color"] == (0, 0, 0): #Este color es del archivo ruleta, el color usado para dibujar es otro que está aquí
+                        for ganador in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadGanada = 0
+                                for dato in ganador[1].items():
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+
+                                addCredits(ganador[0], cantidadGanada)
+                
+                #Aquí se comprueban las rows
+
+                if numero["number"] == "row1":
+                    if winner_number["row"] == 1:
+                        #print("Row ganadora 1")
+                        for ganador in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadGanada = 0
+                                for dato in ganador[1].items():
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+
+                                addCredits(ganador[0], cantidadGanada)
+
+                if numero["number"] == "row2":
+                    if winner_number["row"] == 2:
+                        for ganador in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadGanada = 0
+                                for dato in ganador[1].items():
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+
+                                addCredits(ganador[0], cantidadGanada)
+                
+                if numero["number"] == "row3":
+                    if winner_number["row"] == 3:
+                        for ganador in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadGanada = 0
+                                for dato in ganador[1].items(): #Esto suma lo ganado en el total
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2 #No tiene sentido devolverle un x1 pero IDK
+
+                                addCredits(ganador[0], cantidadGanada)
+
+def addCredits(playerToAdd, cantidad= 100):
+    indexJugador = -1
+    for jugador in jugadores:
+        if jugador["nom"] == playerToAdd:
+            dicJugador = jugador
+            indexJugador = jugadores.index(dicJugador)
+            break
+
+
+    if indexJugador != -1:
+        dicGanancias = dividirCantidadEnFichas(cantidad)
+
+        for ganancia in dicGanancias.items():
+            jugadores[indexJugador][ganancia[0]] += ganancia[1]
+
+    #jugadores[indexJugador] = dicJugador
+
+        
+
+def dividirCantidadEnFichas(cantidad = 145): #cantidad 200
+    divisores = [100, 50, 20, 10, 5]
+    strDivisores = ["100", "050", "020", "010", "005"]
+    dicFichasYGanancias = {}
+
+    for divisor in divisores:
+
+        resto = cantidad % divisor
+        division = cantidad // divisor
+
+        dicFichasYGanancias[strDivisores[divisores.index(divisor)]] = division
+
+        if resto != 0:
+            cantidad = resto
+
+        if resto == 0:
+            break
+
+    return dicFichasYGanancias
+    
+            
 
 if __name__ == "__main__":
     main()
