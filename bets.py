@@ -177,6 +177,12 @@ def releaseChipOnCell():
                             ruleta_distribucio[nums[row][col]]["bets"][bettingPlayer][affectedChip] += 1
 
                         #print(ruleta_distribucio[nums[row][col]])
+
+        #Que reste la ficha
+        for jugador in jugadores:
+            dicJugador = jugador
+            if dicJugador["nom"] == bettingPlayer:
+                jugador[affectedChip] -= 1
                     
         affectedChip = "0"
 
@@ -275,7 +281,7 @@ def app_draw():
     pygame.display.update()
 
 
-def drawBets(coords):
+def drawBets(coords): #Dibuja el historial de apuestas en la ronda
     colorNum = BLACK
     fuenteTxt = pygame.font.SysFont('Arial', 16, True)
     displacement = 0
@@ -287,8 +293,34 @@ def drawBets(coords):
                 check += 1
 
         if check != 3: #En caso de que al menos uno no esté vacío, esto se ejecuta
-            txtNumero = fuenteTxt.render(str(numero["number"]), True, colorNum)
-            screen.blit(txtNumero, (coords[0], coords[1] + displacement * 50))
+            #Dibuja el número
+            txt = f"Apuesta en {str(numero["number"])}:"
+            txtNumero = fuenteTxt.render(txt, True, colorNum)
+            screen.blit(txtNumero, (coords[0], coords[1] + displacement * 70))
+
+            #Dibuja las apuestas
+            for bet in numero["bets"].items():
+                if bet[1] != {}: #Esto comprueba que el 2do item (El diccionario de apuestas) no esté vacío.
+                    #txtNombre = fuenteTxt.render(f"{bet[0]}:", True, colorNum)
+                    #txtApuestas = fuenteTxt.render("\n".join(list(bet[1])), True, colorNum)
+
+                    suma = 0
+                    for item in bet[1].items():
+                        ficha = item[0]
+                        cantidad = item[1]
+                        #print(type(ficha))
+                        #print(type(cantidad))
+                        ficha = int(ficha)
+                        
+
+                        suma += ficha * cantidad
+                    txtNombre = fuenteTxt.render(f"{bet[0]}: {suma}", True, colorNum)
+                    #txtApuestas = fuenteTxt.render("\n".join(list(bet[1])), True, colorNum)
+                    
+                    screen.blit(txtNombre, (coords[0], 20 + coords[1] + displacement * 70))
+                    #screen.blit(txtApuestas, (coords[0] + 60, 20 + coords[1] + displacement * 50))
+                    
+
             displacement += 1
 
         
