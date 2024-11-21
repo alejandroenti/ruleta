@@ -6,7 +6,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import sys
 import utils
-from ruleta import numeros_vermells, ruleta_distribucio, init_ruleta
+from ruleta import numeros_vermells, ruleta_distribucio, init_ruleta, winner_number
 from jugadores import jugadores, printJugadores
 
 WHITE = (255, 255, 255)
@@ -58,6 +58,7 @@ def main():
         is_looping = app_events()
         app_run()
         app_draw()
+        comprobarResultados(winner_number)
 
         clock.tick(60) # Limitar a 60 FPS
 
@@ -456,6 +457,41 @@ def drawPlayerChips(coords):
                         elif dato[0] == "100":
                             pygame.draw.circle(screen, DARKGRAY, (coordsChip[0] + 35 * 4, coordsChip[1]), 15)
                             pygame.draw.circle(screen, BLACK,(coordsChip[0] + 35 * 4, coordsChip[1]), 15, 3)
+
+def comprobarResultados(winnerNumber):
+    
+
+    #winnerNumber es un dict
+    if winner_number != None:
+        colorGanador = winner_number["color"]
+        parityGanadora = winner_number["parity"]
+
+    for numero in ruleta_distribucio:
+        apuestasNumero = numero["bets"].items()
+
+        #Comprobar que el número tiene apuestas
+        check = 0
+        for dato in apuestasNumero:
+            if dato[1] != {}:
+                check += 1
+        
+        #Si check es mayor a 0 tiene apuestas
+        if check > 0:
+            #Comprueba si es el mismo color
+            if numero["number"] == "a":
+                pass
+            if numero["color"] == winner_number["color"]:
+                print("color ganador")
+
+            #Comprueba si la paridad es la misma
+            if numero["parity"] == winner_number["parity"]:
+                print("paridad ganadora")
+
+            #Esto comprueba si el número es el mismo que en el que está la apuesta
+            if winner_number["number"] == numero["number"]:
+                print("mismo numero")
+
+            #Comprueba si la apuesta 
 
 
 if __name__ == "__main__":
