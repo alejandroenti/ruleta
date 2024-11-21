@@ -219,3 +219,6 @@ def spin(delta_time):
     # Gestionamos la llegada de la ruleta a la posición indicada
     if ruleta_actual_spin_angle <= 0:
         is_spinning = False
+
+def get_winner_number():
+    return ruleta_distribucio[winner_number]
