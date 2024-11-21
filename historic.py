@@ -116,7 +116,7 @@ def draw_numbers(screen):
 
         # Seleccionamos el color del texto que deberá tener la casillas
         color = BLACK if number["color"] == RED else WHITE
-        string_surface = font_historic.render(f"{number["number"]}", True, color)
+        string_surface = font_historic.render(f"{number['number']}", True, color)
         string_rect = string_surface.get_rect()
 
         # Calculamos el centro de la casilla y centramos el texto

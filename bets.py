@@ -6,7 +6,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import sys
 import utils
-from ruleta import numeros_vermells, ruleta_distribucio, winner_number
+from ruleta import numeros_vermells, ruleta_distribucio, winner_number, is_spinning
 from jugadores import jugadores, printJugadores
 
 WHITE = (255, 255, 255)
@@ -32,7 +32,7 @@ nums = [[3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
         [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]]
     
 
-coordsBetTable = (250, 100)
+coordsBetTable = (720, 100)
 coordsPrintJugadores = (200, 510)
 coordsDrawPlayerChips = (180, 350)
 
@@ -45,6 +45,9 @@ surface = pygame.Surface((WIDTH, HEIGHT))
 
 def releaseChipOnCell(mouse):
     global affectedChip
+
+    posValida = False
+
     if affectedChip != "0" and mouse["released"]:
         #Si está soltando la ficha en el "0"
         if utils.is_point_in_rect({"x": mouse["x"], "y": mouse["y"]}, {"x": coordsBetTable[0] - 50, "y": coordsBetTable[1], "width": 50, "height": 50}):
@@ -52,7 +55,7 @@ def releaseChipOnCell(mouse):
                 ruleta_distribucio[0]["bets"][bettingPlayer][affectedChip] = 1
             else:
                 ruleta_distribucio[0]["bets"][bettingPlayer][affectedChip] += 1
-
+            posValida = True
 
 
         #Si está soltando en uno de los cuadros de "Columnas"
@@ -62,7 +65,7 @@ def releaseChipOnCell(mouse):
                 ruleta_distribucio[37]["bets"][bettingPlayer][affectedChip] = 1
             else:
                 ruleta_distribucio[37]["bets"][bettingPlayer][affectedChip] += 1
-
+            posValida = True
 
         #Columna2
         elif utils.is_point_in_rect({"x": mouse["x"], "y": mouse["y"]}, {"x": coordsBetTable[0] + 140, "y": coordsBetTable[1] + 35 * 3, "width": 140, "height": 40}):
@@ -70,7 +73,7 @@ def releaseChipOnCell(mouse):
                 ruleta_distribucio[38]["bets"][bettingPlayer][affectedChip] = 1
             else:
                 ruleta_distribucio[38]["bets"][bettingPlayer][affectedChip] += 1
-
+            posValida = True
 
         #Columna 3
         elif utils.is_point_in_rect({"x": mouse["x"], "y": mouse["y"]}, {"x": coordsBetTable[0] + 280, "y": coordsBetTable[1] + 35 * 3, "width": 140, "height": 40}):
@@ -78,7 +81,7 @@ def releaseChipOnCell(mouse):
                 ruleta_distribucio[39]["bets"][bettingPlayer][affectedChip] = 1
             else:
                 ruleta_distribucio[39]["bets"][bettingPlayer][affectedChip] += 1
-
+            posValida = True
 
         #Si está soltando en Par, Impar o Colores
         #Pares
@@ -87,7 +90,7 @@ def releaseChipOnCell(mouse):
                 ruleta_distribucio[40]["bets"][bettingPlayer][affectedChip] = 1
             else:
                 ruleta_distribucio[40]["bets"][bettingPlayer][affectedChip] += 1
-
+            posValida = True
 
         #Color Rojo
         elif utils.is_point_in_rect({"x": mouse["x"], "y": mouse["y"]}, {"x": coordsBetTable[0] + 140, "y": coordsBetTable[1] + 35 * 4, "width": 70, "height": 40}):
@@ -95,7 +98,7 @@ def releaseChipOnCell(mouse):
                 ruleta_distribucio[41]["bets"][bettingPlayer][affectedChip] = 1
             else:
                 ruleta_distribucio[41]["bets"][bettingPlayer][affectedChip] += 1
-
+            posValida = True
 
         #Color Negro
         elif utils.is_point_in_rect({"x": mouse["x"], "y": mouse["y"]}, {"x": coordsBetTable[0] + 210, "y": coordsBetTable[1] + 35 * 4, "width": 70, "height": 40}):
@@ -103,7 +106,7 @@ def releaseChipOnCell(mouse):
                 ruleta_distribucio[42]["bets"][bettingPlayer][affectedChip] = 1
             else:
                 ruleta_distribucio[42]["bets"][bettingPlayer][affectedChip] += 1
-
+            posValida = True
 
         #Impar
         elif utils.is_point_in_rect({"x": mouse["x"], "y": mouse["y"]}, {"x": coordsBetTable[0] + 280, "y": coordsBetTable[1] + 35 * 4, "width": 70, "height": 40}):
@@ -111,7 +114,7 @@ def releaseChipOnCell(mouse):
                 ruleta_distribucio[43]["bets"][bettingPlayer][affectedChip] = 1
             else:
                 ruleta_distribucio[43]["bets"][bettingPlayer][affectedChip] += 1
-
+            posValida = True
 
         #Si está soltando la ficha en un número de la tabla
         else:
@@ -124,12 +127,12 @@ def releaseChipOnCell(mouse):
                         else:
                             ruleta_distribucio[nums[row][col]]["bets"][bettingPlayer][affectedChip] += 1
 
-                        #print(ruleta_distribucio[nums[row][col]])
+                        posValida = True
 
         #Que reste la ficha
         for jugador in jugadores:
             dicJugador = jugador
-            if dicJugador["nom"] == bettingPlayer:
+            if dicJugador["nom"] == bettingPlayer and posValida:
                 jugador[affectedChip] -= 1
                     
         affectedChip = "0"
@@ -229,6 +232,8 @@ def drawBets(screen, coords): #Dibuja el historial de apuestas en la ronda
     colorNum = BLACK
     fuenteTxt = pygame.font.SysFont('Arial', 16, True)
     displacement = 0
+
+
     for numero in ruleta_distribucio:
         #Comprobar si el número tiene alguna apuesta.
         check = 0
@@ -238,16 +243,18 @@ def drawBets(screen, coords): #Dibuja el historial de apuestas en la ronda
 
         if check != 3: #En caso de que al menos uno no esté vacío, esto se ejecuta
             #Dibuja el número
-            txt = f"Apuesta en {str(numero["number"])}:"
+            txt = f"-Apuesta en '{str(numero['number'])}':"
             txtNumero = fuenteTxt.render(txt, True, colorNum)
-            screen.blit(txtNumero, (coords[0], coords[1] + displacement * 70))
+            screen.blit(txtNumero, (coords[0], coords[1] + displacement * 90))
 
             #Dibuja las apuestas
-            for bet in numero["bets"].items():
-                if bet[1] != {}: #Esto comprueba que el 2do item (El diccionario de apuestas) no esté vacío.
-                    #txtNombre = fuenteTxt.render(f"{bet[0]}:", True, colorNum)
-                    #txtApuestas = fuenteTxt.render("\n".join(list(bet[1])), True, colorNum)
+            
+            listaPlayers = list(numero["bets"].keys())
 
+            for bet in numero["bets"].items():
+                #print(bet)
+                if bet[1] != {}: #Esto comprueba que el 2do item (El diccionario de apuestas) no esté vacío.
+                    
                     suma = 0
                     for item in bet[1].items():
                         ficha = item[0]
@@ -256,24 +263,30 @@ def drawBets(screen, coords): #Dibuja el historial de apuestas en la ronda
                         #print(type(cantidad))
                         ficha = int(ficha)
                         
-
                         suma += ficha * cantidad
-                    txtNombre = fuenteTxt.render(f"{bet[0]}: {suma}", True, colorNum)
-                    #txtApuestas = fuenteTxt.render("\n".join(list(bet[1])), True, colorNum)
+
                     
-                    screen.blit(txtNombre, (coords[0], 20 + coords[1] + displacement * 70))
-                    #screen.blit(txtApuestas, (coords[0] + 60, 20 + coords[1] + displacement * 50))
+
+                    txtNombre = fuenteTxt.render(f"    >{bet[0]}: {suma}", True, colorNum)
+                    
+                    screen.blit(txtNombre, (coords[0], 20 + listaPlayers.index(bet[0]) * 20 + coords[1] + displacement * 90))
+
                     
 
             displacement += 1
 
-        
-def drawBetTable(screen, coords):
+def clearBets():
+    for number in ruleta_distribucio:
+        number["bets"] = {'Taronja': {}, 
+                          'Lila': {}, 
+                          'Blau': {}}
+
+def drawBetTable(mouse, screen, coords):
     global nums
     """Las coordenadas son donde quieres que esté la esquina superior izquierda de la casilla '3' de la tabla"""
 
     colorCeldaOutline = BLACK
-    colorCeldaNotNumber = GREEN
+    colorCeldaNotNumber = SALMON
     colorTable = GREEN
 
     
@@ -307,7 +320,7 @@ def drawBetTable(screen, coords):
     pygame.draw.rect(screen, colorCeldaOutline, ((coords[0] + 280, coords[1] + 100), (140, 40)), 3)
     screen.blit(txtColumna3, (27 + coords[0] + 280, 12 + coords[1] + 100))
 
-    #Dibuja los tres cuadrados a la derecha de las casillas
+    """    #Dibuja los tres cuadrados a la derecha de las casillas
     pygame.draw.rect(screen, colorCeldaNotNumber, ((coords[0] + 35 * 12, coords[1]), (35, 35)))
     pygame.draw.rect(screen, colorCeldaOutline, ((coords[0] + 35 * 12, coords[1]), (35, 35)), 3)
 
@@ -316,7 +329,7 @@ def drawBetTable(screen, coords):
 
     pygame.draw.rect(screen, colorCeldaNotNumber, ((coords[0] + 35 * 12, coords[1] + 70), (35, 35)))
     pygame.draw.rect(screen, colorCeldaOutline, ((coords[0] + 35 * 12, coords[1] + 70), (35, 35)), 3)
-
+    """
     #Dibuja los seis rectangulos de debajo de los tres rectangulos
     pygame.draw.rect(screen, colorCeldaNotNumber, ((coords[0], coords[1] + 138), (70, 40)))
     pygame.draw.rect(screen, colorCeldaOutline, ((coords[0], coords[1] + 138), (70, 40)), 3)
@@ -401,14 +414,11 @@ def drawPlayerChips(screen, coords):
                             pygame.draw.circle(screen, DARKGRAY, (coordsChip[0] + 35 * 4, coordsChip[1]), 15)
                             pygame.draw.circle(screen, BLACK,(coordsChip[0] + 35 * 4, coordsChip[1]), 15, 3)
 
-def comprobarResultados(winnerNumber):
+def comprobarResultados(winner_number):
     
 
     #winnerNumber es un dict
-    if winner_number != None:
-        colorGanador = winner_number["color"]
-        parityGanadora = winner_number["parity"]
-
+    
     for numero in ruleta_distribucio:
         apuestasNumero = numero["bets"].items()
 
