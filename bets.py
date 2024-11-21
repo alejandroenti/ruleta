@@ -6,7 +6,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import sys
 import utils
-from ruleta import numeros_vermells, ruleta_distribucio, init_ruleta, winner_number
+from ruleta import numeros_vermells, ruleta_distribucio, winner_number
 from jugadores import jugadores, printJugadores
 
 WHITE = (255, 255, 255)
@@ -24,9 +24,6 @@ BLUE = (30, 30, 230)
 affectedChip = "0"
 bettingPlayer = "none"
 
-pygame.init()
-clock = pygame.time.Clock()
-
 mouse = {"x": -1, "y": -1, "pressed": False, "dragging": False, "released": False}
 
 #LOS NUMS DE LAS FILAS DE UNA RULETA REAL
@@ -42,62 +39,11 @@ coordsDrawPlayerChips = (180, 350)
 # Definir la finestra
 WIDTH = 1280
 HEIGHT = 720
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Window Title')
 
 chipSubsurface = pygame.Surface((WIDTH, HEIGHT))
 surface = pygame.Surface((WIDTH, HEIGHT))
 
-# Bucle de l'aplicació
-def main():
-    is_looping = True
-    init_ruleta()
-    surface.fill(WHITE)
-
-    while is_looping:
-        is_looping = app_events()
-        app_run()
-        app_draw()
-        comprobarResultados(winner_number)
-
-
-        clock.tick(60) # Limitar a 60 FPS
-
-    # Fora del bucle, tancar l'aplicació
-    pygame.quit()
-    sys.exit()
-
-# Gestionar events
-def app_events():
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:  # Botó tancar finestra
-            return False
-        elif event.type == pygame.MOUSEMOTION:
-            if pygame.mouse.get_focused():
-                mouse['x'] = event.pos[0]
-                mouse['y'] = event.pos[1]
-            else:
-                mouse['x'] = -1
-                mouse['y'] = -1
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse["pressed"] = True
-            mouse["released"] = False
-
-        elif event.type == pygame.MOUSEBUTTONUP:
-            mouse["pressed"] = False
-            mouse["dragging"] = False
-            mouse["released"] = True
-
-        
-    return True
-
-# Fer càlculs
-
-def app_run():
-    isMouseClickOnChip()
-    releaseChipOnCell()
-
-def releaseChipOnCell():
+def releaseChipOnCell(mouse):
     global affectedChip
     if affectedChip != "0" and mouse["released"]:
         #Si está soltando la ficha en el "0"
@@ -189,7 +135,7 @@ def releaseChipOnCell():
         affectedChip = "0"
 
 
-def isMouseClickOnChip():
+def isMouseClickOnChip(screen, mouse):
     global affectedChip, bettingPlayer
     #Logica para el arrastre de las fichas
 
@@ -248,9 +194,9 @@ def isMouseClickOnChip():
 
         else:
             if affectedChip:
-                drawChipOnCursor(affectedChip)
+                drawChipOnCursor(screen, mouse, affectedChip)
 
-def drawChipOnCursor(chip):
+def drawChipOnCursor(screen, mouse, chip):
     if chip == "005":
         pygame.draw.circle(screen, RED, (mouse["x"], mouse["y"]), 20)
     elif chip == "010":
@@ -263,14 +209,10 @@ def drawChipOnCursor(chip):
         pygame.draw.circle(screen, DARKGRAY, (mouse["x"], mouse["y"]), 20)
 
     pygame.draw.circle(screen, BLACK, (mouse["x"], mouse["y"]), 20, 4)
-    
-
-    pygame.display.update()
-
 
 
 # Dibuixar 
-def app_draw():
+"""def app_draw():
     screen.fill(WHITE)
     utils.draw_grid(pygame, screen, 50)
     drawBetTable((250, 100))
@@ -281,9 +223,9 @@ def app_draw():
     if affectedChip != "0":
         drawChipOnCursor(affectedChip)
     pygame.display.update()
+"""
 
-
-def drawBets(coords): #Dibuja el historial de apuestas en la ronda
+def drawBets(screen, coords): #Dibuja el historial de apuestas en la ronda
     colorNum = BLACK
     fuenteTxt = pygame.font.SysFont('Arial', 16, True)
     displacement = 0
@@ -326,7 +268,7 @@ def drawBets(coords): #Dibuja el historial de apuestas en la ronda
             displacement += 1
 
         
-def drawBetTable(coords):
+def drawBetTable(screen, coords):
     global nums
     """Las coordenadas son donde quieres que esté la esquina superior izquierda de la casilla '3' de la tabla"""
 
@@ -425,7 +367,7 @@ def drawBetTable(coords):
             if cell * row in ruleta_distribucio:#["bets"]:
                 pass #Aquí habría que hacer que los números que tengan bets se le pongan las fichas que se han apostado encima de los números.
 
-def drawPlayerChips(coords):
+def drawPlayerChips(screen, coords):
     
     #Dibujando la "mesa"
     colorTable = GREEN
@@ -617,8 +559,3 @@ def dividirCantidadEnFichas(cantidad = 145): #cantidad 200
             break
 
     return dicFichasYGanancias
-    
-            
-
-if __name__ == "__main__":
-    main()
