@@ -8,6 +8,7 @@ import sys
 import ruleta
 import arrow
 import button
+import historic
 
 DARK_GREEN = (21, 129, 36)
 
@@ -90,6 +91,11 @@ def app_run():
         button.control_blink_animation(delta_time)
         arrow.control_rotation(delta_time, ruleta.ruleta_actual_speed, ruleta.ANGLE_HALF_STEP)
         ruleta.spin(delta_time)
+    
+    # Si la ruleta se acaba de parar, pondrá la variable 'has_stopped' a True, en ese entonces añadimos el número al histórico y seteamos esa variable a False otra vez
+    if ruleta.has_stopped:
+        historic.add_played_number(ruleta.get_winner_number())
+        ruleta.reset_has_stopped()
 
 def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
@@ -101,6 +107,7 @@ def app_draw():
     ruleta.draw_ruleta(screen)
     arrow.draw_arrow(screen)
     button.draw_button(screen, ruleta.is_spinning)
+    historic.draw_historic(screen)
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
