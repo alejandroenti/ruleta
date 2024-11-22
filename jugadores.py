@@ -15,9 +15,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Window Title')
 
 jugadores = [
-    {"nom": "Taronja", "005": 7, "010": 2, "020": 1, "050": 1, "100": 3},
-    {"nom": "Lila", "005": 1, "010": 2, "020": 1, "050": 1, "100": 0},
-    {"nom": "Blau", "005": 2, "010": 5, "020": 3, "050": 0, "100": 4}
+    {"nom": "Taronja", "005": 2, "010": 2, "020": 2, "050": 2, "100": 2},
+    {"nom": "Lila", "005": 2, "010": 2, "020": 2, "050": 2, "100": 2},
+    {"nom": "Blau", "005": 2, "010": 2, "020": 2, "050": 2, "100": 2}
 ]
 
 def printJugadores(screen, coords, height=500, width=200):

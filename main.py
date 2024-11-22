@@ -11,14 +11,13 @@ import button
 import historic
 import jugadores
 import bets
-import title
 
 DARK_GREEN = (21, 129, 36)
 
 pygame.init()
 clock = pygame.time.Clock()
 
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode((1500, 720))
 pygame.display.set_caption('Ruleta Casino - Álvaro Armas & Alejandro López')
 
 # Declaramos la variables
@@ -35,7 +34,6 @@ def main():
     is_looping = True
 
     ruleta.init_ruleta()
-    title.init_lights()
 
     while is_looping:
         is_looping = app_events()
@@ -64,6 +62,8 @@ def app_events():
                 mouse["y"] = -1
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse["pressed"] = True
+            mouse["released"] = False
+
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse["pressed"] = False
             mouse["dragging"] = False
@@ -100,14 +100,21 @@ def app_run():
     
     # Si la ruleta se acaba de parar, pondrá la variable 'has_stopped' a True, en ese entonces añadimos el número al histórico y seteamos esa variable a False otra vez
     if ruleta.has_stopped:
+        #print(ruleta.get_winner_number())
+        bets.comprobarResultados(ruleta.get_winner_number())
         historic.add_played_number(ruleta.get_winner_number())
+        bets.clearBets()
+        
         ruleta.reset_has_stopped()
+        
     
-    historic.control_animations(delta_time)
-    bets.isMouseClickOnChip(screen, mouse)
+    historic.control_blink_animation(delta_time)
+    """
+    if not ruleta.is_spinning:
+        bets.releaseChipOnCell(mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
+    """
     bets.releaseChipOnCell(mouse)
-    title.control_blink_animation(delta_time)
-
+    
 def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
 
@@ -121,11 +128,15 @@ def app_draw():
     historic.draw_historic(screen)
     jugadores.printJugadores(screen, (35, 500))
 
-    bets.drawBetTable(screen, (700, 100))
-    bets.drawBets(screen, (1100, 100))
-    bets.drawPlayerChips(screen, (725, 350))
+    bets.drawBetTable(mouse, screen, (720, 100))
+    bets.drawBets(screen, (1260, 80))
+    bets.drawPlayerChips(screen, (180, 350))
+    
+    """if not ruleta.is_spinning:
+        bets.isMouseClickOnChip(screen, mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
+    """
+    bets.isMouseClickOnChip(screen, mouse) #Cambiada posición porque el problema sería que estaba detrás del resto de cosas y no se veía
 
-    title.draw_title(screen)
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
 

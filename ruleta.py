@@ -224,7 +224,7 @@ def draw_rect(object, screen):
     #   5. Calculamos la posición en la que se debería posicionar el texto
     #   6. Centramos el texto en la posición calculada anteriormente
 
-    string_surface = font_ruleta.render(f"{object["number"]}", True, color)
+    string_surface = font_ruleta.render(f"{object['number']}", True, color)
     surface_rotation = -90 - object["angles"][0] - ANGLE_HALF_STEP
     string_surface = pygame.transform.rotozoom(string_surface, surface_rotation, 1.0)
     string_rect = string_surface.get_rect()
