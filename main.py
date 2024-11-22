@@ -21,6 +21,10 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1500, 844))
 pygame.display.set_caption('Ruleta Casino - Álvaro Armas & Alejandro López')
 
+# Declaramos las diferentes surfaces
+bets_surface = pygame.Surface((175, 255))   # Configuramos surface a la altura de la tabla
+bets_surface.fill((222, 222, 222))
+
 # Declaramos la variables
 mouse = {
     "x": -1,
@@ -124,6 +128,8 @@ def app_draw():
     # Pintar el fons de blanc
     screen.fill(DARK_GREEN)
 
+    screen.blit(bets_surface, (1260, 260))
+
     # Dibujamos todos los elementos necesarios por pantalla
     ruleta.draw_ruleta(screen)
     arrow.draw_arrow(screen)
@@ -132,7 +138,7 @@ def app_draw():
     jugadores.printJugadores(screen, (35, 635))
 
     bets.drawBetTable(mouse, screen, (720, 300))
-    bets.drawBets(screen, (1260, 280))
+    bets.drawBets(bets_surface, (0, 0))
     bets.drawPlayerChips(screen, (620, 550))
     
     """if not ruleta.is_spinning:
