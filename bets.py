@@ -34,7 +34,7 @@ nums = [[3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
 
 coordsBetTable = (720, 100)
 coordsPrintJugadores = (200, 510)
-coordsDrawPlayerChips = (180, 350)
+coordsDrawPlayerChips = (620, 350)
 
 # Definir la finestra
 WIDTH = 1280
@@ -472,7 +472,7 @@ def comprobarResultados(winner_number):
                             if ganador[1] != {}:
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
-                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
                                 addCredits(ganador[0], cantidadGanada)
                 
@@ -484,7 +484,7 @@ def comprobarResultados(winner_number):
                             if ganador[1] != {}:
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
-                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
                                 addCredits(ganador[0], cantidadGanada)
 
@@ -494,7 +494,7 @@ def comprobarResultados(winner_number):
                             if ganador[1] != {}:
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
-                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
                                 addCredits(ganador[0], cantidadGanada)
                 
@@ -507,7 +507,7 @@ def comprobarResultados(winner_number):
                             if ganador[1] != {}:
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
-                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
                                 addCredits(ganador[0], cantidadGanada)
 
@@ -517,7 +517,7 @@ def comprobarResultados(winner_number):
                             if ganador[1] != {}:
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
-                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
                                 addCredits(ganador[0], cantidadGanada)
                 
@@ -527,7 +527,7 @@ def comprobarResultados(winner_number):
                             if ganador[1] != {}:
                                 cantidadGanada = 0
                                 for dato in ganador[1].items(): #Esto suma lo ganado en el total
-                                    cantidadGanada += (int(dato[0]) * dato[1]) * 2 #No tiene sentido devolverle un x1 pero IDK
+                                    cantidadGanada += (int(dato[0]) * dato[1]) * 1 #No tiene sentido devolverle un x1 pero IDK
 
                                 addCredits(ganador[0], cantidadGanada)
 

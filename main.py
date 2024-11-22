@@ -17,7 +17,7 @@ DARK_GREEN = (21, 129, 36)
 pygame.init()
 clock = pygame.time.Clock()
 
-screen = pygame.display.set_mode((1500, 720))
+screen = pygame.display.set_mode((1500, 844))
 pygame.display.set_caption('Ruleta Casino - Álvaro Armas & Alejandro López')
 
 # Declaramos la variables
@@ -130,7 +130,7 @@ def app_draw():
 
     bets.drawBetTable(mouse, screen, (720, 100))
     bets.drawBets(screen, (1260, 80))
-    bets.drawPlayerChips(screen, (180, 350))
+    bets.drawPlayerChips(screen, (620, 350))
     
     """if not ruleta.is_spinning:
         bets.isMouseClickOnChip(screen, mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
