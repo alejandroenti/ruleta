@@ -17,7 +17,7 @@ DARK_GREEN = (21, 129, 36)
 pygame.init()
 clock = pygame.time.Clock()
 
-screen = pygame.display.set_mode((1500, 720))
+screen = pygame.display.set_mode((1500, 844))
 pygame.display.set_caption('Ruleta Casino - Álvaro Armas & Alejandro López')
 
 # Declaramos la variables
