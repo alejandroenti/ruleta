@@ -12,22 +12,22 @@ BROWN = (128, 60, 34)
 
 RECT_HISTORIC_EXTERNAL = {
      "x": 680,
-     "y": 530,
+     "y": 705,
      "width": 560,
      "heigth": 120
 }
 
 RECT_HISTORIC_INNER = {
      "x": 696,
-     "y": 546,
+     "y": 721,
      "width": 528,
      "heigth": 84
 }
 
 CELL_Y_POSITIONS = {
-    BLACK: 550,
-    GREEN: 570,
-    RED: 590
+    BLACK: 725,
+    GREEN: 745,
+    RED: 765
 }
 
 CELL_X_COMPLETE_START = 1180
@@ -42,7 +42,7 @@ LINE_WIDTH = 4
 LIST_MAX_SIZE = 13
 
 TITLE_TEXT = "HISTORIC"
-TITLE_TEXT_POSITION = (960, 500)
+TITLE_TEXT_POSITION = (960, 675)
 
 BORDER_RADIUS = 8
 

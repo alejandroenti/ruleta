@@ -11,6 +11,7 @@ import button
 import historic
 import jugadores
 import bets
+import title
 
 DARK_GREEN = (21, 129, 36)
 
@@ -34,6 +35,7 @@ def main():
     is_looping = True
 
     ruleta.init_ruleta()
+    title.init_lights()
 
     while is_looping:
         is_looping = app_events()
@@ -114,6 +116,7 @@ def app_run():
         bets.releaseChipOnCell(mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
     """
     bets.releaseChipOnCell(mouse)
+    title.control_blink_animation(delta_time)
     
 def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
@@ -126,16 +129,18 @@ def app_draw():
     arrow.draw_arrow(screen)
     button.draw_button(screen, ruleta.is_spinning)
     historic.draw_historic(screen)
-    jugadores.printJugadores(screen, (35, 500))
+    jugadores.printJugadores(screen, (35, 635))
 
-    bets.drawBetTable(mouse, screen, (720, 100))
-    bets.drawBets(screen, (1260, 80))
-    bets.drawPlayerChips(screen, (620, 350))
+    bets.drawBetTable(mouse, screen, (720, 300))
+    bets.drawBets(screen, (1260, 280))
+    bets.drawPlayerChips(screen, (620, 550))
     
     """if not ruleta.is_spinning:
         bets.isMouseClickOnChip(screen, mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
     """
     bets.isMouseClickOnChip(screen, mouse) #Cambiada posición porque el problema sería que estaba detrás del resto de cosas y no se veía
+
+    title.draw_title(screen)
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()

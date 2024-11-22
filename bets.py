@@ -32,9 +32,9 @@ nums = [[3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
         [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]]
     
 
-coordsBetTable = (720, 100)
+coordsBetTable = (720, 300)
 coordsPrintJugadores = (200, 510)
-coordsDrawPlayerChips = (620, 350)
+coordsDrawPlayerChips = (620, 550)
 
 # Definir la finestra
 WIDTH = 1280

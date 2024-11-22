@@ -4,11 +4,11 @@ import pygame
 import utils
 
 # Definimos las constantes
-BUTTON_EXTERIOR = (450, 60, 150, 75)
-BUTTON_INTERIOR = (460, 70, 130, 55)
+BUTTON_EXTERIOR = (175, 60, 150, 75)
+BUTTON_INTERIOR = (185, 70, 130, 55)
 PADDING = 2
 
-TEXT_POSITION = (525, 100)
+TEXT_POSITION = (250, 100)
 
 BUTTON_TEXT = "SPIN"
 

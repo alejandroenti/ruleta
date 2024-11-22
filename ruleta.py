@@ -10,7 +10,7 @@ import random
 # Definimos las constantes
 POSICIONS = 37
 FILES = 3
-CENTER = { "x": 250, "y": 250 }
+CENTER = { "x": 250, "y": 400 }
 RADI_RULETA = 225
 RADI_EXTERIOR = 185
 RADI_INTERIOR = 85

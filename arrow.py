@@ -3,8 +3,8 @@
 import pygame
 
 # Definimos las constantes
-POINTS_ARROW = [(425, 250), (450, 265), (450, 235)]
-PIVOT = (437, 258)
+POINTS_ARROW = [(425, 400), (450, 415), (450, 385)]
+PIVOT = (437, 408)
 YELLOW = (240, 229, 48)
 
 # Definimos las variables

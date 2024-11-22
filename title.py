@@ -3,11 +3,7 @@
 import pygame
 
 # Definimos las constantes
-BUTTON_EXTERIOR = (450, 60, 150, 75)
-BUTTON_INTERIOR = (460, 70, 130, 55)
-PADDING = 2
-
-TITLE_TEXT_RECT = (525, 100, 500, 150)
+TITLE_TEXT_RECT = (500, 50, 500, 150)
 
 TITLE_TEXT = "CASINO ROULETTE"
 
