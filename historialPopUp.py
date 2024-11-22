@@ -36,14 +36,23 @@ def drawPopUp(screen):
     height = screen.get_height()
     
     fuenteTxt = pygame.font.SysFont('Arial', 20, True)
+    fuenteTitulo = pygame.font.SysFont('Arial', 62, True)
+
 
     pygame.draw.rect(screen, ALMOSTWHITE, ((50, 50), (width - 100, height - 100)))
     pygame.draw.rect(screen, bets.BLACK, ((50, 50), (width - 100, height - 100)), 20)
 
+    txtTitulo = fuenteTitulo.render("HISTORIAL", True, bets.BLACK)
+
+
+    screen.blit(txtTitulo, (550, 80))
+
+
     displacement = 0
     for linea in bets.historialBets:
-        if linea[0] == ">":
-            displacement += 1
+        if linea != "":
+            if linea[0] == ">":
+                displacement += 1
 
         txtLinea = fuenteTxt.render(linea, True, bets.BLACK)
 

@@ -36,7 +36,9 @@ coordsBetTable = (720, 100)
 coordsPrintJugadores = (200, 510)
 coordsDrawPlayerChips = (620, 350)
 
-historialBets = []
+historialBets = ["", "", ""]
+
+numApuesta = 1 #Este es el número de apuesta que aparecerá en el historial de apuestas
 
 # Definir la finestra
 WIDTH = 1280
@@ -417,7 +419,7 @@ def drawPlayerChips(screen, coords):
                             pygame.draw.circle(screen, BLACK,(coordsChip[0] + 35 * 4, coordsChip[1]), 15, 3)
 
 def comprobarResultados(winner_number):
-    
+    global numApuesta
     
 
     #winnerNumber es un dict
@@ -437,7 +439,9 @@ def comprobarResultados(winner_number):
         if check > 0:
             #Para ir agregando los resultados al historial, aquí haré un append del número que tiene apuestas, y después appends individuales para cada apuesta
             #en el número
-            historialBets.append(f"> Apuesta en {numero["number"]}")
+            
+            historialBets.insert(0, f"> Apuesta Nº{numApuesta}: {numero['number']}")
+            numApuesta += 1
 
             #Comprueba si el número es un "numero" o "rojo", "negro", "rows"
             if isinstance(numero["number"], int):
@@ -451,9 +455,10 @@ def comprobarResultados(winner_number):
                                 for dato in ganador[1].items(): 
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 35
 
-                                    historialBets.append(f"{ganador[0]} ha ganado {cantidadGanada}")
+
 
                                 addCredits(ganador[0], cantidadGanada)
+                                historialBets.insert(1, f"{ganador[0]} ha ganado {cantidadGanada}")
 
                     else: #Si el número no es 0
                         for ganador in numero["bets"].items():
@@ -463,6 +468,15 @@ def comprobarResultados(winner_number):
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 2
 
                                 addCredits(ganador[0], cantidadGanada)
+                                historialBets.insert(1, f"{ganador[0]} ha ganado {cantidadGanada}")
+                else:
+                    for perdedor in numero["bets"].items():
+                            if perdedor[1] != {}:
+                                cantidadPerdida = 0
+                                for dato in perdedor[1].items():
+                                    cantidadPerdida += (int(dato[0]) * dato[1])
+
+                                historialBets.insert(1, f"{perdedor[0]} ha perdido {cantidadPerdida}")
             
             #En caso de que no sea un número, pasa aquí
             else:
@@ -476,6 +490,15 @@ def comprobarResultados(winner_number):
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 2
 
                                 addCredits(ganador[0], cantidadGanada)
+                                historialBets.insert(1, f"{ganador[0]} ha ganado {cantidadGanada}")
+                    else:
+                        for perdedor in numero["bets"].items():
+                                if perdedor[1] != {}:
+                                    cantidadPerdida = 0
+                                    for dato in perdedor[1].items():
+                                        cantidadPerdida += (int(dato[0]) * dato[1])
+
+                                    historialBets.insert(1, f"{perdedor[0]} ha perdido {cantidadPerdida}")
 
                 if numero["number"] == "impar":
                     if winner_number["parity"] == "odd":
@@ -485,7 +508,16 @@ def comprobarResultados(winner_number):
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
+                                historialBets.insert(1, f"{ganador[0]} ha ganado {cantidadGanada}")
                                 addCredits(ganador[0], cantidadGanada)
+                    else:
+                        for perdedor in numero["bets"].items():
+                                if perdedor[1] != {}:
+                                    cantidadPerdida = 0
+                                    for dato in perdedor[1].items():
+                                        cantidadPerdida += (int(dato[0]) * dato[1])
+
+                                    historialBets.insert(1, f"{perdedor[0]} ha perdido {cantidadPerdida}")
                 
                 #Aquí comprobar si el color es ganador
 
@@ -497,17 +529,18 @@ def comprobarResultados(winner_number):
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
-                                    historialBets.append(f"{ganador[0]} ha ganado {cantidadGanada}")
+
+                                historialBets.insert(1, f"{ganador[0]} ha ganado {cantidadGanada}")
 
                                 addCredits(ganador[0], cantidadGanada)
-                else:
-                    for perdedor in numero["bets"].items():
-                            if ganador[1] != {}:
-                                cantidadPerdida = 0
-                                for dato in perdedor[1].items():
-                                    cantidadPerdida += (int(dato[0]) * dato[1])
+                    else:
+                        for perdedor in numero["bets"].items():
+                                if perdedor[1] != {}:
+                                    cantidadPerdida = 0
+                                    for dato in perdedor[1].items():
+                                        cantidadPerdida += (int(dato[0]) * dato[1])
 
-                                    historialBets.append(f"{ganador[0]} ha perdido {cantidadGanada}")
+                                    historialBets.insert(1, f"{perdedor[0]} ha perdido {cantidadPerdida}")
 
 
                 if numero["number"] == "black":
@@ -518,17 +551,17 @@ def comprobarResultados(winner_number):
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
-                                    historialBets.append(f"{ganador[0]} ha ganado {cantidadGanada}")
+                                historialBets.insert(1, f"{ganador[0]} ha ganado {cantidadGanada}")
                                     
                                 addCredits(ganador[0], cantidadGanada)
-                else:
-                    for perdedor in numero["bets"].items():
-                            if ganador[1] != {}:
-                                cantidadPerdida = 0
-                                for dato in perdedor[1].items():
-                                    cantidadPerdida += (int(dato[0]) * dato[1])
+                    else:
+                        for perdedor in numero["bets"].items():
+                                if perdedor[1] != {}:
+                                    cantidadPerdida = 0
+                                    for dato in perdedor[1].items():
+                                        cantidadPerdida += (int(dato[0]) * dato[1])
 
-                                    historialBets.append(f"{ganador[0]} ha perdido {cantidadGanada}")
+                                    historialBets.insert(1, f"{perdedor[0]} ha perdido {cantidadPerdida}")
 
 
                 
@@ -544,6 +577,14 @@ def comprobarResultados(winner_number):
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
                                 addCredits(ganador[0], cantidadGanada)
+                    else:
+                        for perdedor in numero["bets"].items():
+                                if perdedor[1] != {}:
+                                    cantidadPerdida = 0
+                                    for dato in perdedor[1].items():
+                                        cantidadPerdida += (int(dato[0]) * dato[1])
+
+                                    historialBets.insert(1, f"{perdedor[0]} ha perdido {cantidadPerdida}")
 
                 if numero["number"] == "row2":
                     if winner_number["row"] == 2:
@@ -554,7 +595,16 @@ def comprobarResultados(winner_number):
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
                                 addCredits(ganador[0], cantidadGanada)
-                
+                                historialBets.insert(1, f"{ganador[0]} ha ganado {cantidadGanada}")
+                    else:
+                        for perdedor in numero["bets"].items():
+                                if perdedor[1] != {}:
+                                    cantidadPerdida = 0
+                                    for dato in perdedor[1].items():
+                                        cantidadPerdida += (int(dato[0]) * dato[1])
+
+                                    historialBets.insert(1, f"{perdedor[0]} ha perdido {cantidadPerdida}")
+
                 if numero["number"] == "row3":
                     if winner_number["row"] == 3:
                         for ganador in numero["bets"].items():
@@ -564,6 +614,15 @@ def comprobarResultados(winner_number):
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1 #No tiene sentido devolverle un x1 pero IDK
 
                                 addCredits(ganador[0], cantidadGanada)
+                                historialBets.insert(1, f"{ganador[0]} ha ganado {cantidadGanada}")
+                    else:
+                        for perdedor in numero["bets"].items():
+                                if perdedor[1] != {}:
+                                    cantidadPerdida = 0
+                                    for dato in perdedor[1].items():
+                                        cantidadPerdida += (int(dato[0]) * dato[1])
+
+                                    historialBets.insert(1, f"{perdedor[0]} ha perdido {cantidadPerdida}")
 
 def addCredits(playerToAdd, cantidad= 100):
     indexJugador = -1
