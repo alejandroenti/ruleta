@@ -108,7 +108,7 @@ def app_run():
         ruleta.reset_has_stopped()
         
     
-    historic.control_blink_animation(delta_time)
+    historic.control_animations(delta_time)
     """
     if not ruleta.is_spinning:
         bets.releaseChipOnCell(mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
