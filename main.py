@@ -11,6 +11,7 @@ import button
 import historic
 import jugadores
 import bets
+import title
 
 DARK_GREEN = (21, 129, 36)
 
@@ -34,6 +35,7 @@ def main():
     is_looping = True
 
     ruleta.init_ruleta()
+    title.init_lights()
 
     while is_looping:
         is_looping = app_events()
@@ -104,6 +106,7 @@ def app_run():
     historic.control_animations(delta_time)
     bets.isMouseClickOnChip(screen, mouse)
     bets.releaseChipOnCell(mouse)
+    title.control_blink_animation(delta_time)
 
 def app_draw():
     global points, buttons_width, buttons_color, padding, selected_color
@@ -122,6 +125,7 @@ def app_draw():
     bets.drawBets(screen, (1100, 100))
     bets.drawPlayerChips(screen, (725, 350))
 
+    title.draw_title(screen)
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
 
