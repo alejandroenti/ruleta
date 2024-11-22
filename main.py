@@ -11,6 +11,8 @@ import button
 import historic
 import jugadores
 import bets
+import historialPopUp
+
 
 DARK_GREEN = (21, 129, 36)
 
@@ -28,7 +30,7 @@ mouse = {
     "released": False,
     "dragging": False
 }
-
+clickOnHistButton = False
 # Bucle de l'aplicació
 def main():
     is_looping = True
@@ -47,7 +49,7 @@ def main():
     sys.exit()
 
 def app_events():
-    global mouse
+    global mouse, clickOnHistButton
 
     mouse_inside = pygame.mouse.get_focused()  # El ratolí està dins de la finestra?
 
@@ -63,6 +65,7 @@ def app_events():
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse["pressed"] = True
             mouse["released"] = False
+            clickOnHistButton = historialPopUp.isClickOnButton(screen, mouse, (540, 600))
 
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse["pressed"] = False
@@ -131,12 +134,17 @@ def app_draw():
     bets.drawBetTable(mouse, screen, (720, 100))
     bets.drawBets(screen, (1260, 80))
     bets.drawPlayerChips(screen, (620, 350))
+
+    historialPopUp.drawButton(screen, (540, 600))
     
     """if not ruleta.is_spinning:
         bets.isMouseClickOnChip(screen, mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
     """
     bets.isMouseClickOnChip(screen, mouse) #Cambiada posición porque el problema sería que estaba detrás del resto de cosas y no se veía
 
+    if clickOnHistButton:
+        historialPopUp.drawPopUp(screen)
+    
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
 

@@ -36,6 +36,8 @@ coordsBetTable = (720, 100)
 coordsPrintJugadores = (200, 510)
 coordsDrawPlayerChips = (620, 350)
 
+historialBets = []
+
 # Definir la finestra
 WIDTH = 1280
 HEIGHT = 720
@@ -416,6 +418,7 @@ def drawPlayerChips(screen, coords):
 
 def comprobarResultados(winner_number):
     
+    
 
     #winnerNumber es un dict
     
@@ -428,8 +431,14 @@ def comprobarResultados(winner_number):
             if dato[1] != {}:
                 check += 1
         
+        
+        
         #Si check es mayor a 0 tiene apuestas
         if check > 0:
+            #Para ir agregando los resultados al historial, aquí haré un append del número que tiene apuestas, y después appends individuales para cada apuesta
+            #en el número
+            historialBets.append(f"> Apuesta en {numero["number"]}")
+
             #Comprueba si el número es un "numero" o "rojo", "negro", "rows"
             if isinstance(numero["number"], int):
 
@@ -441,6 +450,8 @@ def comprobarResultados(winner_number):
                                 cantidadGanada = 0
                                 for dato in ganador[1].items(): 
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 35
+
+                                    historialBets.append(f"{ganador[0]} ha ganado {cantidadGanada}")
 
                                 addCredits(ganador[0], cantidadGanada)
 
@@ -486,7 +497,18 @@ def comprobarResultados(winner_number):
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
+                                    historialBets.append(f"{ganador[0]} ha ganado {cantidadGanada}")
+
                                 addCredits(ganador[0], cantidadGanada)
+                else:
+                    for perdedor in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadPerdida = 0
+                                for dato in perdedor[1].items():
+                                    cantidadPerdida += (int(dato[0]) * dato[1])
+
+                                    historialBets.append(f"{ganador[0]} ha perdido {cantidadGanada}")
+
 
                 if numero["number"] == "black":
                     if winner_number["color"] == (0, 0, 0): #Este color es del archivo ruleta, el color usado para dibujar es otro que está aquí
@@ -496,7 +518,19 @@ def comprobarResultados(winner_number):
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
 
+                                    historialBets.append(f"{ganador[0]} ha ganado {cantidadGanada}")
+                                    
                                 addCredits(ganador[0], cantidadGanada)
+                else:
+                    for perdedor in numero["bets"].items():
+                            if ganador[1] != {}:
+                                cantidadPerdida = 0
+                                for dato in perdedor[1].items():
+                                    cantidadPerdida += (int(dato[0]) * dato[1])
+
+                                    historialBets.append(f"{ganador[0]} ha perdido {cantidadGanada}")
+
+
                 
                 #Aquí se comprueban las rows
 
