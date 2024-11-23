@@ -53,6 +53,11 @@ def drawPopUp(screen):
         if linea != "":
             if linea[0] == ">":
                 displacement += 1
+            elif linea[0] == "N":
+                txtLinea = fuenteTxt.render(linea, True, bets.BLACK)
+                screen.blit(txtLinea, (100, 100 + displacement * 30))
+                displacement += 1
+                continue
 
         txtLinea = fuenteTxt.render(linea, True, bets.BLACK)
 
