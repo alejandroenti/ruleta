@@ -13,7 +13,7 @@ import historic
 import jugadores
 import bets
 import historialPopUp
-import utils
+import house_edge
 
 import title
 import bank
@@ -104,11 +104,11 @@ scroll = {
     "visible_height": 255
 }
 
-is_looping = True
+is_house_edge = False
 
 # Bucle de l'aplicació
 def main():
-    global is_looping
+    is_looping = True
 
     ruleta.init_ruleta()
     title.init_lights()
@@ -160,10 +160,13 @@ def app_events():
                 ruleta.init_spin()
                 arrow.reset_arrow_rotation()
             
+            if house_edge.is_hover_button(mouse):
+                return False
+            
     return True
 
 def app_run():
-    global mouse, is_spinning, bets_surface, is_looping
+    global mouse, is_spinning, bets_surface, is_house_edge
 
     delta_time = clock.get_time() / 1000.0  # Convertir a segons
 
@@ -174,6 +177,13 @@ def app_run():
     else:
         button.is_pressed = False
         button.is_hover = False
+    
+    if house_edge.is_hover_button(mouse) and is_house_edge:
+        house_edge.check_states(mouse)
+    else:
+        house_edge.is_pressed = False
+        house_edge.is_pressed = False
+        house_edge.control_blink_animation(delta_time)
 
     # Si la ruleta se encuentra dando vuelta, tendremos el siguiente orden de actualización:
     #   1. Blink del botón Spin
@@ -194,7 +204,7 @@ def app_run():
 
         historialPopUp.getPopUpReady(historyBets_surface, screen)
         historialPopUp.drawPopUp(screen, historyBets_surface) #Esto actualiza la subsurface del historial de apuestas
-        is_looping = jugadores.any_player_alive() # Revisamos si hay algún jugador que tenga alguna ficha para jugar, en caso que no sea así salimos del juego
+        is_house_edge = not jugadores.any_player_alive() # Revisamos si hay algún jugador que tenga alguna ficha para jugar, en caso que no sea así salimos del juego
         jugadores.reorder_chips()
         ruleta.reset_has_stopped()
         
@@ -210,7 +220,7 @@ def app_run():
     
     
 def app_draw():
-    global bets_surface, points, buttons_width, buttons_color, padding, selected_color
+    global bets_surface, points, buttons_width, buttons_color, padding, selected_color, is_house_edge
 
     # Pintar el fons de blanc
     screen.fill(DARK_GREEN)
@@ -249,6 +259,10 @@ def app_draw():
 
         draw_historyScroll()
         manage_historyScroll()
+    
+    if is_house_edge:
+        house_edge.draw_button(screen)
+        house_edge.draw_text(screen)
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
