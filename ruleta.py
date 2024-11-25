@@ -10,7 +10,7 @@ import random
 # Definimos las constantes
 POSICIONS = 37
 FILES = 3
-CENTER = { "x": 250, "y": 400 }
+CENTER = { "x": 250, "y": 390 }
 RADI_RULETA = 225
 RADI_EXTERIOR = 185
 RADI_INTERIOR = 85
@@ -36,6 +36,7 @@ SILVER = (192, 192, 192)
 # Definimos las variables globales
 numeros_vermells = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 ruleta_distribucio = []
+ruleta_order = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26]
 
 winner_number = None
 winner_angle = 0
@@ -74,6 +75,8 @@ def init_ruleta():
         else:
             color = BLACK
 
+        position = ruleta_order.index(num)
+
         posicio = {
             "number": num,                                  # Indica el propio número
             "row": 0 if num == 0 else fila,                 # Indica la fila an la que es encuentra para apostar, si el número es 0, la fila tambén será 0
@@ -84,7 +87,7 @@ def init_ruleta():
                 "Blau": {},
                 "Lila": {}
             },                                     # Indica las apuestas que hay en esta casilla, puede ser una diccionario similar { "player": Blau, "bet": {"010": 3, "050": 1} }
-            "angles": [ANGLE_STEP * num - 90 - ANGLE_HALF_STEP, ANGLE_STEP * num + ANGLE_STEP - 90 - ANGLE_HALF_STEP]   # Indicamos los ángulos de inicio y de final del polígono que dibujaremos en la ruleta
+            "angles": [ANGLE_STEP * position - 90 - ANGLE_HALF_STEP, ANGLE_STEP * position + ANGLE_STEP - 90 - ANGLE_HALF_STEP]   # Indicamos los ángulos de inicio y de final del polígono que dibujaremos en la ruleta
         }
 
         # Añadimos el diccionario a la ruleta

@@ -4,6 +4,7 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import sys
+import utils
 
 import ruleta
 import arrow
@@ -12,14 +13,21 @@ import historic
 import jugadores
 import bets
 import title
+import bank
 
 DARK_GREEN = (21, 129, 36)
+BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
 
 pygame.init()
 clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode((1500, 844))
 pygame.display.set_caption('Ruleta Casino - Álvaro Armas & Alejandro López')
+
+# Declaramos las diferentes surfaces
+bets_surface = pygame.Surface((175, 90 * 44 + 15), pygame.SRCALPHA)   # Configuramos surface a la altura de la tabla
+bets_surface.fill((222, 222, 222))
 
 # Declaramos la variables
 mouse = {
@@ -30,9 +38,23 @@ mouse = {
     "dragging": False
 }
 
+scroll = {
+    "percentage": 0,
+    "dragging": False,
+    "x": 1450,
+    "y": 260,
+    "width": 5,
+    "height": 255,
+    "radius": 8,
+    "surface_offset": 0,
+    "visible_height": 255
+}
+
+is_looping = True
+
 # Bucle de l'aplicació
 def main():
-    is_looping = True
+    global is_looping
 
     ruleta.init_ruleta()
     title.init_lights()
@@ -80,10 +102,11 @@ def app_events():
     return True
 
 def app_run():
-    global mouse, is_spinning
+    global mouse, is_spinning, bets_surface, is_looping
 
     delta_time = clock.get_time() / 1000.0  # Convertir a segons
 
+    manage_scroll()
     # Cambiamos los diferentes estados en el que se puede encontrar el botón si estamos sobre él con el mouse y la ruleta no está girando
     if button.is_hover_button(mouse) and not ruleta.is_spinning:
         button.check_states(mouse)
@@ -105,8 +128,9 @@ def app_run():
         #print(ruleta.get_winner_number())
         bets.comprobarResultados(ruleta.get_winner_number())
         historic.add_played_number(ruleta.get_winner_number())
+        bets.create_animation_chips()
         bets.clearBets()
-        
+        is_looping = jugadores.any_player_alive() # Revisamos si hay algún jugador que tenga alguna ficha para jugar, en caso que no sea así salimos del juego
         ruleta.reset_has_stopped()
         
     
@@ -116,13 +140,17 @@ def app_run():
         bets.releaseChipOnCell(mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
     """
     bets.releaseChipOnCell(mouse)
+    bets.control_chip_animation(delta_time)
     title.control_blink_animation(delta_time)
     
 def app_draw():
-    global points, buttons_width, buttons_color, padding, selected_color
+    global bets_surface, points, buttons_width, buttons_color, padding, selected_color
 
     # Pintar el fons de blanc
     screen.fill(DARK_GREEN)
+
+    sub_bets_surface = bets_surface.subsurface((0, scroll["surface_offset"], bets_surface.get_width(), scroll["visible_height"]))
+    screen.blit(sub_bets_surface, (1250, 260))
 
     # Dibujamos todos los elementos necesarios por pantalla
     ruleta.draw_ruleta(screen)
@@ -132,7 +160,7 @@ def app_draw():
     jugadores.printJugadores(screen, (35, 635))
 
     bets.drawBetTable(mouse, screen, (720, 300))
-    bets.drawBets(screen, (1260, 280))
+    bets.drawBets(bets_surface, (10, 5))
     bets.drawPlayerChips(screen, (620, 550))
     
     """if not ruleta.is_spinning:
@@ -141,9 +169,43 @@ def app_draw():
     bets.isMouseClickOnChip(screen, mouse) #Cambiada posición porque el problema sería que estaba detrás del resto de cosas y no se veía
 
     title.draw_title(screen)
+    bank.draw_bank(screen)
 
+    bets.draw_animation_chips(screen)
+
+    draw_scroll()
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
+
+def manage_scroll():
+    global scroll
+
+    radi = scroll["radius"]
+    center = {
+        "x": int(scroll["x"] + scroll["width"] / 2),
+        "y": int(scroll["y"] + (scroll["percentage"] / 100) * scroll["height"])
+    }
+
+    if mouse["pressed"] and not scroll["dragging"] and utils.is_point_in_circle(mouse, center, radi):
+        scroll["dragging"] = True
+
+    if not mouse["pressed"]:
+        scroll["dragging"] = False
+
+    if scroll["dragging"]:
+        relative_y = max(min(mouse["y"], scroll["y"] + scroll["height"]), scroll["y"])
+        scroll["percentage"] = ((relative_y - scroll["y"]) / scroll["height"]) * 100
+
+    scroll["surface_offset"] = int((scroll["percentage"] / 100) * (bets_surface.get_height() - scroll["visible_height"]))
+
+def draw_scroll():
+    rect = (scroll["x"], scroll["y"], scroll["width"], scroll["height"])
+
+    center = (scroll["x"] + scroll["width"] / 2, int(scroll["y"] + (scroll["percentage"] / 100) * scroll["height"]))
+    radius = scroll["radius"]
+
+    pygame.draw.rect(screen, GRAY, rect)
+    pygame.draw.circle(screen, BLACK, center, radius)
 
 if __name__ == "__main__":
     main()

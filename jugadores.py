@@ -20,6 +20,8 @@ jugadores = [
     {"nom": "Blau", "005": 2, "010": 2, "020": 2, "050": 2, "100": 2}
 ]
 
+jugadores_fichas = ["005", "010", "020", "050", "100"]
+
 def printJugadores(screen, coords, height=500, width=200):
     """coords: tuple con las coordenadas donde quieras la esquina superior izquierda del cuadro, 
     height: (int) altura del cuadro, width: (int) anchura del cuadro"""
@@ -35,3 +37,11 @@ def printJugadores(screen, coords, height=500, width=200):
         txtFicha = fuenteTxt.render(txt, True, BLACK)
         screen.blit(txtNom, (10 + coords[0] + 20 , coords[1] + 40 + 40 * jugadores.index(jugador)))
         screen.blit(txtFicha, (10 + coords[0] + 20, coords[1] + 60 + 40 * jugadores.index(jugador)))
+
+def any_player_alive():
+    for jugador in jugadores:
+        for ficha in jugadores_fichas:
+            if jugador[ficha] != 0:
+                return True
+    
+    return False
