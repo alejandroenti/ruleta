@@ -59,7 +59,7 @@ def init_ruleta():
 
     Retorna: None'''
 
-    global ruleta_distribucio, ruleta_order
+    global ruleta_distribucio
 
     # Inicializamos las barras de la ruleta
     init_bars()
