@@ -15,9 +15,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Window Title')
 
 jugadores = [
-    {"nom": "Taronja", "005": 2, "010": 2, "020": 2, "050": 2, "100": 2},
-    {"nom": "Lila", "005": 2, "010": 2, "020": 2, "050": 2, "100": 2},
-    {"nom": "Blau", "005": 2, "010": 2, "020": 2, "050": 2, "100": 2}
+    {"nom": "Taronja", "005": 0, "010": 0, "020": 0, "050": 0, "100": 1},
+    {"nom": "Lila", "005": 0, "010": 0, "020": 0, "050": 0, "100": 1},
+    {"nom": "Blau", "005": 0, "010": 0, "020": 0, "050": 0, "100": 1}
 ]
 
 jugadores_fichas = ["005", "010", "020", "050", "100"]
@@ -45,3 +45,15 @@ def any_player_alive():
                 return True
     
     return False
+
+def reorder_chips():
+    global jugadores
+
+    for jugador in jugadores:
+        total_amount = jugador['005'] * 5 + jugador['010']  * 10 + jugador['020'] * 20 + jugador['050'] * 50 + jugador['100'] * 100
+
+        for index in range(len(jugadores_fichas) - 1, -1, -1):
+            num = int(jugadores_fichas[index])
+            chips = round((total_amount / 2) / num) if num != 5 else round(total_amount / num)
+            jugador[jugadores_fichas[index]] = chips
+            total_amount -= num * chips
