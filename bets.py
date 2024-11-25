@@ -25,11 +25,11 @@ BLUE = (30, 30, 230)
 CENTER_TABLE = (930, 388)
 
 CHIP_SPEEDS = {
-    "005": 61,
-    "010": 59,
-    "020": 56,
-    "050": 53,
-    "100": 50
+    "005": 125,
+    "010": 120,
+    "020": 115,
+    "050": 110,
+    "100": 105
 }
 
 affectedChip = "0"
@@ -820,6 +820,8 @@ def create_animation_chips():
     global animation_chips
 
     for values in prizes.values():
+        if values["win_prize"] == 0:
+            continue
         chips = dividirCantidadEnFichas(values["win_prize"])
         for chip in chips:
             dir = (values["position"][0] - CENTER_TABLE[0], values["position"][1] - CENTER_TABLE[1])

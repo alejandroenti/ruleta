@@ -156,7 +156,7 @@ def app_events():
 
             # Cuando levantamos el click derecho del mouse, verificamos si nos encontramos encima del botón y si no se encuentra girando la ruleta.
             # De esta manera evitamos que se cominece el giro cada vez que pulsamos sobre el botón
-            if button.is_hover_button(mouse) and not ruleta.is_spinning:
+            if button.is_hover_button(mouse) and not ruleta.is_spinning and not is_house_edge:
                 ruleta.init_spin()
                 arrow.reset_arrow_rotation()
             
@@ -172,7 +172,7 @@ def app_run():
 
     manage_scroll()
     # Cambiamos los diferentes estados en el que se puede encontrar el botón si estamos sobre él con el mouse y la ruleta no está girando
-    if button.is_hover_button(mouse) and not ruleta.is_spinning:
+    if button.is_hover_button(mouse) and not ruleta.is_spinning and not is_house_edge:
         button.check_states(mouse)
     else:
         button.is_pressed = False
@@ -251,6 +251,10 @@ def app_draw():
     bets.draw_animation_chips(screen)
     draw_scroll()
 
+    if is_house_edge:
+        house_edge.draw_button(screen)
+        house_edge.draw_text(screen)
+
     if clickOnHistButton:
         sub_bets_surface = historyBets_surface.subsurface((0, historyScroll["surface_offset"], historyBets_surface.get_width(), historyScroll["visible_height"]))
         
@@ -260,9 +264,6 @@ def app_draw():
         draw_historyScroll()
         manage_historyScroll()
     
-    if is_house_edge:
-        house_edge.draw_button(screen)
-        house_edge.draw_text(screen)
 
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
