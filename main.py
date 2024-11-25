@@ -58,6 +58,7 @@ def main():
 
     ruleta.init_ruleta()
     title.init_lights()
+    jugadores.reorder_chips()
 
     while is_looping:
         is_looping = app_events()
@@ -131,6 +132,7 @@ def app_run():
         bets.create_animation_chips()
         bets.clearBets()
         is_looping = jugadores.any_player_alive() # Revisamos si hay algún jugador que tenga alguna ficha para jugar, en caso que no sea así salimos del juego
+        jugadores.reorder_chips()
         ruleta.reset_has_stopped()
         
     
