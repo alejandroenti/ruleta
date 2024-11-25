@@ -277,12 +277,17 @@ def get_bets():
         if check != 3 and numero['number'] not in bets:
             bets.append(numero['number'])
 
+def reset_surface(surface):
+    surface.fill((222, 222, 222))
+
 def drawBets(screen, coords): #Dibuja el historial de apuestas en la ronda
     colorNum = BLACK
     fuenteTxt = pygame.font.SysFont('Arial', 16, True)
     displacement = 0
 
     get_bets()
+
+    reset_surface(screen)
 
     for num in bets:
 

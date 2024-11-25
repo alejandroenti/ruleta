@@ -131,7 +131,6 @@ def app_run():
         bets.create_animation_chips()
         bets.clearBets()
         is_looping = jugadores.any_player_alive() # Revisamos si hay algún jugador que tenga alguna ficha para jugar, en caso que no sea así salimos del juego
-        bets_surface.fill((222, 222, 222))
         ruleta.reset_has_stopped()
         
     
