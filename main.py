@@ -50,9 +50,11 @@ scroll = {
     "visible_height": 255
 }
 
+is_looping = True
+
 # Bucle de l'aplicació
 def main():
-    is_looping = True
+    global is_looping
 
     ruleta.init_ruleta()
     title.init_lights()
@@ -100,7 +102,7 @@ def app_events():
     return True
 
 def app_run():
-    global mouse, is_spinning, bets_surface
+    global mouse, is_spinning, bets_surface, is_looping
 
     delta_time = clock.get_time() / 1000.0  # Convertir a segons
 
@@ -128,6 +130,7 @@ def app_run():
         historic.add_played_number(ruleta.get_winner_number())
         bets.create_animation_chips()
         bets.clearBets()
+        is_looping = jugadores.any_player_alive() # Revisamos si hay algún jugador que tenga alguna ficha para jugar, en caso que no sea así salimos del juego
         bets_surface.fill((222, 222, 222))
         ruleta.reset_has_stopped()
         
