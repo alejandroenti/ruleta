@@ -36,6 +36,17 @@ coordsBetTable = (720, 300)
 coordsPrintJugadores = (200, 510)
 coordsDrawPlayerChips = (620, 550)
 
+bets = []
+special_bets = {
+    "row1": 37,
+    "row2": 38,
+    "row3": 39,
+    "par": 40,
+    "impar": 43,
+    "red": 41,
+    "black": 42,
+}
+
 # Definir la finestra
 WIDTH = 1280
 HEIGHT = 720
@@ -228,12 +239,7 @@ def drawChipOnCursor(screen, mouse, chip):
     pygame.display.update()
 """
 
-def drawBets(screen, coords): #Dibuja el historial de apuestas en la ronda
-    colorNum = BLACK
-    fuenteTxt = pygame.font.SysFont('Arial', 16, True)
-    displacement = 0
-
-
+def get_bets():
     for numero in ruleta_distribucio:
         #Comprobar si el número tiene alguna apuesta.
         check = 0
@@ -241,45 +247,72 @@ def drawBets(screen, coords): #Dibuja el historial de apuestas en la ronda
             if dato == {}:
                 check += 1
 
+        if check != 3 and numero['number'] not in bets:
+            bets.append(numero['number'])
+
+def drawBets(screen, coords): #Dibuja el historial de apuestas en la ronda
+    colorNum = BLACK
+    fuenteTxt = pygame.font.SysFont('Arial', 16, True)
+    displacement = 0
+
+    get_bets()
+
+    for num in bets:
+
+        if num in special_bets.keys():
+            numero = ruleta_distribucio[special_bets[num]]
+        else:
+            numero = ruleta_distribucio[num]
+
+
+        """ for numero in ruleta_distribucio:
+        #Comprobar si el número tiene alguna apuesta.
+        check = 0
+        for dato in list(numero["bets"].values()): #Esto comprueba si los 3 valores de la apuesta de un número están vacíos
+            if dato == {}:
+                check += 1
+
         if check != 3: #En caso de que al menos uno no esté vacío, esto se ejecuta
-            #Dibuja el número
-            txt = f"-Apuesta en '{str(numero['number'])}':"
-            txtNumero = fuenteTxt.render(txt, True, colorNum)
-            screen.blit(txtNumero, (coords[0], coords[1] + displacement * 90))
+            #Dibuja el número"""
+        txt = f"-Apuesta en '{str(numero['number'])}':"
+        txtNumero = fuenteTxt.render(txt, True, colorNum)
+        screen.blit(txtNumero, (coords[0], coords[1] + displacement * 90))
 
-            #Dibuja las apuestas
-            
-            listaPlayers = list(numero["bets"].keys())
+        #Dibuja las apuestas
+        
+        listaPlayers = list(numero["bets"].keys())
 
-            for bet in numero["bets"].items():
-                #print(bet)
-                if bet[1] != {}: #Esto comprueba que el 2do item (El diccionario de apuestas) no esté vacío.
+        for bet in numero["bets"].items():
+            #print(bet)
+            if bet[1] != {}: #Esto comprueba que el 2do item (El diccionario de apuestas) no esté vacío.
+                
+                suma = 0
+                for item in bet[1].items():
+                    ficha = item[0]
+                    cantidad = item[1]
+                    #print(type(ficha))
+                    #print(type(cantidad))
+                    ficha = int(ficha)
                     
-                    suma = 0
-                    for item in bet[1].items():
-                        ficha = item[0]
-                        cantidad = item[1]
-                        #print(type(ficha))
-                        #print(type(cantidad))
-                        ficha = int(ficha)
-                        
-                        suma += ficha * cantidad
+                    suma += ficha * cantidad
 
-                    
+                
 
-                    txtNombre = fuenteTxt.render(f"    >{bet[0]}: {suma}", True, colorNum)
-                    
-                    screen.blit(txtNombre, (coords[0], 20 + listaPlayers.index(bet[0]) * 20 + coords[1] + displacement * 90))
+                txtNombre = fuenteTxt.render(f"    >{bet[0]}: {suma}", True, colorNum)
+                
+                screen.blit(txtNombre, (coords[0], 20 + listaPlayers.index(bet[0]) * 20 + coords[1] + displacement * 90))
 
-                    
+                
 
-            displacement += 1
+        displacement += 1
 
 def clearBets():
+    global bets
     for number in ruleta_distribucio:
         number["bets"] = {'Taronja': {}, 
                           'Lila': {}, 
                           'Blau': {}}
+    bets.clear()
 
 def drawBetTable(mouse, screen, coords):
     global nums

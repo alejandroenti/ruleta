@@ -99,7 +99,7 @@ def app_events():
     return True
 
 def app_run():
-    global mouse, is_spinning
+    global mouse, is_spinning, bets_surface
 
     delta_time = clock.get_time() / 1000.0  # Convertir a segons
 
@@ -126,7 +126,7 @@ def app_run():
         bets.comprobarResultados(ruleta.get_winner_number())
         historic.add_played_number(ruleta.get_winner_number())
         bets.clearBets()
-        
+        bets_surface.fill((222, 222, 222))
         ruleta.reset_has_stopped()
         
     
@@ -139,7 +139,7 @@ def app_run():
     title.control_blink_animation(delta_time)
     
 def app_draw():
-    global points, buttons_width, buttons_color, padding, selected_color
+    global bets_surface, points, buttons_width, buttons_color, padding, selected_color
 
     # Pintar el fons de blanc
     screen.fill(DARK_GREEN)
