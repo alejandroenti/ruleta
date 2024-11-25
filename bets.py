@@ -47,6 +47,8 @@ coordsBetTable = (720, 300)
 coordsPrintJugadores = (200, 510)
 coordsDrawPlayerChips = (620, 550)
 
+historialBets = ["", "", ""]
+
 bets = []
 special_bets = {
     "row1": 37,
