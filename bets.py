@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import math
+import random
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
@@ -20,6 +21,16 @@ GREEN = (51, 158, 63)
 LIGHTGREEN = (10, 170, 10)
 WALNUT = (115, 61, 27)
 BLUE = (30, 30, 230)
+
+CENTER_TABLE = (930, 388)
+
+CHIP_SPEEDS = {
+    "005": 61,
+    "010": 59,
+    "020": 56,
+    "050": 53,
+    "100": 50
+}
 
 affectedChip = "0"
 bettingPlayer = "none"
@@ -46,6 +57,9 @@ special_bets = {
     "red": 41,
     "black": 42,
 }
+
+prizes = {}
+animation_chips = []
 
 # Definir la finestra
 WIDTH = 1280
@@ -224,6 +238,19 @@ def drawChipOnCursor(screen, mouse, chip):
 
     pygame.draw.circle(screen, BLACK, (mouse["x"], mouse["y"]), 20, 4)
 
+def draw_chip(screen, position, chip):
+    if chip == "005":
+        pygame.draw.circle(screen, RED, position, 20)
+    elif chip == "010":
+        pygame.draw.circle(screen, BLUE, position, 20)
+    elif chip == "020":
+        pygame.draw.circle(screen, GREEN, position, 20)
+    elif chip == "050":
+        pygame.draw.circle(screen, WALNUT, position, 20)
+    elif chip == "100":
+        pygame.draw.circle(screen, DARKGRAY, position, 20)
+
+    pygame.draw.circle(screen, BLACK, position, 20, 4)
 
 # Dibuixar 
 """def app_draw():
@@ -448,9 +475,30 @@ def drawPlayerChips(screen, coords):
                             pygame.draw.circle(screen, BLACK,(coordsChip[0] + 35 * 4, coordsChip[1]), 15, 3)
 
 def comprobarResultados(winner_number):
-    
+    global prizes
 
     #winnerNumber es un dict
+
+    prizes = {
+        "Taronja": {
+            "win_prize": 0,
+            "position": (620, 550)
+        },
+        "Lila": {
+            "win_prize": 0,
+            "position": (870, 550)
+        },
+        "Blau": {
+            "win_prize": 0,
+            "position": (1120, 550)
+        },
+        "Banca": {
+            "win_prize": 0,
+            "position": (1360, 660)
+        }
+    }
+
+    money_to_banca = 0
     
     for numero in ruleta_distribucio:
         apuestasNumero = numero["bets"].items()
@@ -463,6 +511,7 @@ def comprobarResultados(winner_number):
         
         #Si check es mayor a 0 tiene apuestas
         if check > 0:
+            
             #Comprueba si el número es un "numero" o "rojo", "negro", "rows"
             if isinstance(numero["number"], int):
 
@@ -474,7 +523,7 @@ def comprobarResultados(winner_number):
                                 cantidadGanada = 0
                                 for dato in ganador[1].items(): 
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 35
-
+                                prizes[ganador[0]]["win_prize"] += cantidadGanada
                                 addCredits(ganador[0], cantidadGanada)
 
                     else: #Si el número no es 0
@@ -483,8 +532,11 @@ def comprobarResultados(winner_number):
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 2
-
+                                prizes[ganador[0]]["win_prize"] += cantidadGanada
                                 addCredits(ganador[0], cantidadGanada)
+                else:
+                    # Si el número no es el ganador, debemos recorrer todas las apuestas y dárselas a la banca
+                    money_to_banca += add_credit_to_bank(numero["bets"].items())
             
             #En caso de que no sea un número, pasa aquí
             else:
@@ -496,8 +548,10 @@ def comprobarResultados(winner_number):
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 2
-
+                                prizes[ganador[0]]["win_prize"] += cantidadGanada
                                 addCredits(ganador[0], cantidadGanada)
+                    else:
+                        money_to_banca += add_credit_to_bank(numero["bets"].items())
 
                 if numero["number"] == "impar":
                     if winner_number["parity"] == "odd":
@@ -506,8 +560,10 @@ def comprobarResultados(winner_number):
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
-
+                                prizes[ganador[0]]["win_prize"] += cantidadGanada
                                 addCredits(ganador[0], cantidadGanada)
+                    else:
+                        money_to_banca += add_credit_to_bank(numero["bets"].items())
                 
                 #Aquí comprobar si el color es ganador
 
@@ -518,8 +574,10 @@ def comprobarResultados(winner_number):
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
-
+                                prizes[ganador[0]]["win_prize"] += cantidadGanada
                                 addCredits(ganador[0], cantidadGanada)
+                    else:
+                        money_to_banca += add_credit_to_bank(numero["bets"].items())
 
                 if numero["number"] == "black":
                     if winner_number["color"] == (0, 0, 0): #Este color es del archivo ruleta, el color usado para dibujar es otro que está aquí
@@ -528,8 +586,10 @@ def comprobarResultados(winner_number):
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
-
+                                prizes[ganador[0]]["win_prize"] += cantidadGanada
                                 addCredits(ganador[0], cantidadGanada)
+                    else:
+                        money_to_banca += add_credit_to_bank(numero["bets"].items())
                 
                 #Aquí se comprueban las rows
 
@@ -541,8 +601,10 @@ def comprobarResultados(winner_number):
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
-
+                                prizes[ganador[0]]["win_prize"] += cantidadGanada
                                 addCredits(ganador[0], cantidadGanada)
+                    else:
+                        money_to_banca += add_credit_to_bank(numero["bets"].items())
 
                 if numero["number"] == "row2":
                     if winner_number["row"] == 2:
@@ -551,8 +613,10 @@ def comprobarResultados(winner_number):
                                 cantidadGanada = 0
                                 for dato in ganador[1].items():
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1
-
+                                prizes[ganador[0]]["win_prize"] += cantidadGanada
                                 addCredits(ganador[0], cantidadGanada)
+                    else:
+                        money_to_banca += add_credit_to_bank(numero["bets"].items())
                 
                 if numero["number"] == "row3":
                     if winner_number["row"] == 3:
@@ -561,8 +625,21 @@ def comprobarResultados(winner_number):
                                 cantidadGanada = 0
                                 for dato in ganador[1].items(): #Esto suma lo ganado en el total
                                     cantidadGanada += (int(dato[0]) * dato[1]) * 1 #No tiene sentido devolverle un x1 pero IDK
-
+                                prizes[ganador[0]]["win_prize"] += cantidadGanada
                                 addCredits(ganador[0], cantidadGanada)
+                    else:
+                        money_to_banca += add_credit_to_bank(numero["bets"].items())
+    
+    prizes["Banca"]["win_prize"] = money_to_banca
+
+def add_credit_to_bank(bets):
+    to_bank = 0
+    for ganador in bets:
+        if ganador[1] != {}:
+            for dato in ganador[1].items():
+                to_bank += (int(dato[0]) * dato[1])
+    
+    return to_bank
 
 def addCredits(playerToAdd, cantidad= 100):
     indexJugador = -1
@@ -602,3 +679,43 @@ def dividirCantidadEnFichas(cantidad = 145): #cantidad 200
             break
 
     return dicFichasYGanancias
+
+def create_animation_chips():
+    global animation_chips
+
+    for values in prizes.values():
+        chips = dividirCantidadEnFichas(values["win_prize"])
+        for chip in chips:
+            dir = (values["position"][0] - CENTER_TABLE[0], values["position"][1] - CENTER_TABLE[1])
+            magnitude = math.sqrt(dir[0]**2 + dir[1]**2)
+            unit_dir = (dir[0] / magnitude, dir[1] / magnitude)
+            strart_pos = (random.randint(CENTER_TABLE[0] - 20, CENTER_TABLE[0] + 20), random.randint(CENTER_TABLE[1] - 20, CENTER_TABLE[1] + 20))
+            dict = {
+                "value": chip,
+                "speed": CHIP_SPEEDS[chip],
+                "position": strart_pos,
+                "end_position": values["position"],
+                "direction": unit_dir
+            }
+            animation_chips.append(dict)
+
+def control_chip_animation(delta_time):
+    global animation_chips
+
+    to_eliminate = []
+
+    if len(animation_chips) > 0:
+        for index, chip in enumerate(animation_chips):
+            chip["position"] = (chip["position"][0] + chip["direction"][0] * chip["speed"] * delta_time, chip["position"][1] + chip["direction"][1] * chip["speed"] * delta_time)
+            if chip["position"][1] >= chip["end_position"][1]:
+                to_eliminate.insert(0, index)
+    
+        for index in to_eliminate:
+            animation_chips.pop(index)
+
+def draw_animation_chips(screen):
+    global animation_chips
+
+    if len(animation_chips) > 0:
+        for chip in animation_chips:
+            draw_chip(screen, chip["position"], chip["value"])

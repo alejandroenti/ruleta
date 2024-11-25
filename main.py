@@ -126,6 +126,7 @@ def app_run():
         #print(ruleta.get_winner_number())
         bets.comprobarResultados(ruleta.get_winner_number())
         historic.add_played_number(ruleta.get_winner_number())
+        bets.create_animation_chips()
         bets.clearBets()
         bets_surface.fill((222, 222, 222))
         ruleta.reset_has_stopped()
@@ -137,6 +138,7 @@ def app_run():
         bets.releaseChipOnCell(mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
     """
     bets.releaseChipOnCell(mouse)
+    bets.control_chip_animation(delta_time)
     title.control_blink_animation(delta_time)
     
 def app_draw():
@@ -166,6 +168,8 @@ def app_draw():
 
     title.draw_title(screen)
     bank.draw_bank(screen)
+
+    bets.draw_animation_chips(screen)
 
     draw_scroll()
     # Actualitzar el dibuix a la finestra
