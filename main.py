@@ -13,6 +13,7 @@ import historic
 import jugadores
 import bets
 import title
+import bank
 
 DARK_GREEN = (21, 129, 36)
 BLACK = (0, 0, 0)
@@ -164,6 +165,7 @@ def app_draw():
     bets.isMouseClickOnChip(screen, mouse) #Cambiada posición porque el problema sería que estaba detrás del resto de cosas y no se veía
 
     title.draw_title(screen)
+    bank.draw_bank(screen)
 
     draw_scroll()
     # Actualitzar el dibuix a la finestra
