@@ -235,6 +235,11 @@ def app_draw():
         bets.isMouseClickOnChip(screen, mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
     """
     bets.isMouseClickOnChip(screen, mouse) #Cambiada posición porque el problema sería que estaba detrás del resto de cosas y no se veía
+    
+    title.draw_title(screen)
+    bank.draw_bank(screen)
+    bets.draw_animation_chips(screen)
+    draw_scroll()
 
     if clickOnHistButton:
         sub_bets_surface = historyBets_surface.subsurface((0, historyScroll["surface_offset"], historyBets_surface.get_width(), historyScroll["visible_height"]))
@@ -244,13 +249,7 @@ def app_draw():
 
         draw_historyScroll()
         manage_historyScroll()
-        
-    title.draw_title(screen)
-    bank.draw_bank(screen)
 
-    bets.draw_animation_chips(screen)
-
-    draw_scroll()
     # Actualitzar el dibuix a la finestra
     pygame.display.update()
 
