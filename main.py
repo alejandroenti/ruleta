@@ -160,7 +160,7 @@ def app_events():
                 ruleta.init_spin()
                 arrow.reset_arrow_rotation()
             
-            if house_edge.is_hover_button(mouse):
+            if house_edge.is_hover_button(mouse) and is_house_edge:
                 return False
             
     return True
