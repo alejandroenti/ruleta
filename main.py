@@ -12,6 +12,9 @@ import button
 import historic
 import jugadores
 import bets
+import historialPopUp
+import utils
+
 import title
 import bank
 
@@ -37,6 +40,57 @@ mouse = {
     "released": False,
     "dragging": False
 }
+
+clickOnHistButton = False
+
+historyBets_surface = pygame.Surface((screen.get_width() - 100, screen.get_height() * 3), pygame.SRCALPHA)
+
+
+historialPopUp.getPopUpReady(historyBets_surface, screen)
+
+historyScroll = {
+    "percentage": 0,
+    "dragging": False,
+    "x": 1400,
+    "y": 160,
+    "width": 5,
+    "height": 500,
+    "radius": 8,
+    "surface_offset": 0,
+    "visible_height": 740
+}
+
+def manage_historyScroll():
+    global historyScroll
+
+    radi = historyScroll["radius"]
+    center = {
+        "x": int(historyScroll["x"] + historyScroll["width"] / 2),
+        "y": int(historyScroll["y"] + (historyScroll["percentage"] / 100) * historyScroll["height"])
+    }
+
+    if mouse["pressed"] and not historyScroll["dragging"] and utils.is_point_in_circle(mouse, center, radi):
+        historyScroll["dragging"] = True
+
+    if not mouse["pressed"]:
+        historyScroll["dragging"] = False
+
+    if historyScroll["dragging"]:
+        relative_y = max(min(mouse["y"], historyScroll["y"] + historyScroll["height"]), historyScroll["y"])
+        historyScroll["percentage"] = ((relative_y - historyScroll["y"]) / historyScroll["height"]) * 100
+
+    historyScroll["surface_offset"] = int((historyScroll["percentage"] / 100) * (historyBets_surface.get_height() - historyScroll["visible_height"]))
+
+def draw_historyScroll():
+    rect = (historyScroll["x"], historyScroll["y"], historyScroll["width"], historyScroll["height"])
+
+    center = (historyScroll["x"] + historyScroll["width"] / 2, int(historyScroll["y"] + (historyScroll["percentage"] / 100) * historyScroll["height"]))
+    radius = historyScroll["radius"]
+
+    pygame.draw.rect(screen, bets.GRAY, rect)
+    pygame.draw.circle(screen, bets.BLACK, center, radius)
+
+
 
 scroll = {
     "percentage": 0,
@@ -71,7 +125,7 @@ def main():
     sys.exit()
 
 def app_events():
-    global mouse
+    global mouse, clickOnHistButton
 
     mouse_inside = pygame.mouse.get_focused()  # El ratolí està dins de la finestra?
 
@@ -87,6 +141,12 @@ def app_events():
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse["pressed"] = True
             mouse["released"] = False
+            
+            if clickOnHistButton:
+                if not utils.is_point_in_rect({"x": mouse["x"], "y": mouse["y"]}, {"x": 50, "y": 50, "width": screen.get_width() - 100, "height": screen.get_height() - 100}):
+                    clickOnHistButton = False
+            else:
+                clickOnHistButton = historialPopUp.isClickOnButton(screen, mouse, (540, 600))
 
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse["pressed"] = False
@@ -130,6 +190,9 @@ def app_run():
         historic.add_played_number(ruleta.get_winner_number())
         bets.create_animation_chips()
         bets.clearBets()
+
+        historialPopUp.getPopUpReady(historyBets_surface, screen)
+        historialPopUp.drawPopUp(screen, historyBets_surface) #Esto actualiza la subsurface del historial de apuestas
         is_looping = jugadores.any_player_alive() # Revisamos si hay algún jugador que tenga alguna ficha para jugar, en caso que no sea así salimos del juego
         ruleta.reset_has_stopped()
         
@@ -142,6 +205,7 @@ def app_run():
     bets.releaseChipOnCell(mouse)
     bets.control_chip_animation(delta_time)
     title.control_blink_animation(delta_time)
+    
     
 def app_draw():
     global bets_surface, points, buttons_width, buttons_color, padding, selected_color
@@ -162,12 +226,23 @@ def app_draw():
     bets.drawBetTable(mouse, screen, (720, 300))
     bets.drawBets(bets_surface, (10, 5))
     bets.drawPlayerChips(screen, (620, 550))
+
+    historialPopUp.drawButton(screen, (540, 600))
     
     """if not ruleta.is_spinning:
         bets.isMouseClickOnChip(screen, mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
     """
     bets.isMouseClickOnChip(screen, mouse) #Cambiada posición porque el problema sería que estaba detrás del resto de cosas y no se veía
 
+    if clickOnHistButton:
+        sub_bets_surface = historyBets_surface.subsurface((0, historyScroll["surface_offset"], historyBets_surface.get_width(), historyScroll["visible_height"]))
+        
+        screen.blit(sub_bets_surface, (50, 50))
+        pygame.draw.rect(screen, bets.BLACK, ((50, 50) ,(historyBets_surface.get_width(), 740)), 10)
+
+        draw_historyScroll()
+        manage_historyScroll()
+        
     title.draw_title(screen)
     bank.draw_bank(screen)
 
