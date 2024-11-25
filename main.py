@@ -147,7 +147,7 @@ def app_events():
                 if not utils.is_point_in_rect({"x": mouse["x"], "y": mouse["y"]}, {"x": 50, "y": 50, "width": screen.get_width() - 100, "height": screen.get_height() - 100}):
                     clickOnHistButton = False
             else:
-                clickOnHistButton = historialPopUp.isClickOnButton(screen, mouse, (540, 600))
+                clickOnHistButton = historialPopUp.isClickOnButton(screen, mouse, (1250, 200))
 
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse["pressed"] = False
@@ -239,7 +239,7 @@ def app_draw():
     bets.drawBets(bets_surface, (10, 5))
     bets.drawPlayerChips(screen, (620, 550))
 
-    historialPopUp.drawButton(screen, (540, 600))
+    historialPopUp.drawButton(screen, (1250, 200))
     
     """if not ruleta.is_spinning:
         bets.isMouseClickOnChip(screen, mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
