@@ -820,6 +820,8 @@ def create_animation_chips():
     global animation_chips
 
     for values in prizes.values():
+        if values["win_prize"] == 0:
+            continue
         chips = dividirCantidadEnFichas(values["win_prize"])
         for chip in chips:
             dir = (values["position"][0] - CENTER_TABLE[0], values["position"][1] - CENTER_TABLE[1])
