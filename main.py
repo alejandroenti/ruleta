@@ -210,11 +210,11 @@ def app_run():
         
     
     historic.control_animations(delta_time)
-    """
+   
     if not ruleta.is_spinning:
         bets.releaseChipOnCell(mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
-    """
-    bets.releaseChipOnCell(mouse)
+   
+    #bets.releaseChipOnCell(mouse)
     bets.control_chip_animation(delta_time)
     title.control_blink_animation(delta_time)
     
@@ -241,10 +241,10 @@ def app_draw():
 
     historialPopUp.drawButton(screen, (1250, 200))
     
-    """if not ruleta.is_spinning:
+    if not ruleta.is_spinning:
         bets.isMouseClickOnChip(screen, mouse) #Por motivos de comodidad al programar, esto es mejor comentado, pero a la hora de la verdad descomentarlo
-    """
-    bets.isMouseClickOnChip(screen, mouse) #Cambiada posición porque el problema sería que estaba detrás del resto de cosas y no se veía
+
+    #bets.isMouseClickOnChip(screen, mouse) #Cambiada posición porque el problema sería que estaba detrás del resto de cosas y no se veía
     
     title.draw_title(screen)
     bank.draw_bank(screen)
